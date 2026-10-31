@@ -29,14 +29,14 @@ try {
   throw error
 }
 
-const pixelRatioCap = lowPower ? 1.22 : 1.75
+const pixelRatioCap = lowPower ? 1.12 : 1.75
 renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, pixelRatioCap))
 renderer.setSize(window.innerWidth, window.innerHeight)
 renderer.outputColorSpace = THREE.SRGBColorSpace
 renderer.toneMapping = THREE.ACESFilmicToneMapping
 renderer.toneMappingExposure = 0.9
 renderer.shadowMap.enabled = true
-renderer.shadowMap.type = THREE.PCFSoftShadowMap
+renderer.shadowMap.type = lowPower ? THREE.PCFShadowMap : THREE.PCFSoftShadowMap
 renderer.shadowMap.autoUpdate = false
 renderer.shadowMap.needsUpdate = true
 
@@ -71,6 +71,144 @@ function isPortrait() {
 
 function viewPreset(name) {
   return VIEWS[isPortrait() ? `${name}-portrait` : name] || VIEWS[name]
+}
+
+// The office bounds are deliberately slightly tighter than the plinth so the
+// camera frames the architecture, workstations, boardroom and lounge without
+// wasting screen space on the outer floor trim.
+const OFFICE_BOUNDS = new THREE.Box3(
+  new THREE.Vector3(-11.9, 0, -8.1),
+  new THREE.Vector3(11.9, 4.85, 8.1),
+)
+
+function elementRect(selector) {
+  const element = document.querySelector(selector)
+  if (!element) return null
+  const style = window.getComputedStyle(element)
+  if (style.display === 'none' || style.visibility === 'hidden') return null
+  const rect = element.getBoundingClientRect()
+  if (rect.width < 1 || rect.height < 1) return null
+  return rect
+}
+
+// Reserve the area not covered by the HUD rails. This is what prevents the
+// office from disappearing behind the roster, feed and selected-agent cards.
+function getSafeViewport() {
+  const margin = 16
+  const hud = elementRect('.hud-bar')
+  const leftRail = elementRect('.left-rail')
+  const rightRail = elementRect('.right-rail')
+  const operations = elementRect('.operations-bar')
+  const mobile = window.innerWidth <= 900
+
+  let left = margin
+  let right = window.innerWidth - margin
+  let top = (hud ? hud.bottom : 0) + 10
+  let bottom = window.innerHeight - margin
+
+  if (mobile) {
+    // On portrait/tablet layouts the rails are bottom sheets. Keep the 3D
+    // floor above the roster and the operations bar.
+    if (rightRail) bottom = Math.min(bottom, rightRail.top - 10)
+    if (operations) bottom = Math.min(bottom, operations.top - 10)
+  } else {
+    // Let the outer floor trim tuck under the translucent rails. This keeps
+    // the five agents, executive desk and boardroom large and readable while
+    // still preventing the important content from being hidden.
+    const railOverlap = 88
+    if (leftRail) left = Math.max(left, leftRail.right - railOverlap)
+    if (rightRail) right = Math.min(right, rightRail.left + railOverlap)
+    if (operations) bottom = Math.min(bottom, operations.top - 12)
+  }
+
+  if (right - left < 240) {
+    left = 12
+    right = window.innerWidth - 12
+  }
+  if (bottom - top < 240) {
+    top = 70
+    bottom = window.innerHeight - 80
+  }
+
+  const width = right - left
+  const height = bottom - top
+  return {
+    left,
+    right,
+    top,
+    bottom,
+    width,
+    height,
+    cx: (left + right) / 2,
+    cy: top + height * 0.5,
+  }
+}
+
+function computeFittedView(viewName) {
+  const preset = viewPreset(viewName)
+  if (!preset) return null
+
+  const safe = getSafeViewport()
+  const width = window.innerWidth
+  const height = window.innerHeight
+  const fov = preset.fov
+  const direction = preset.position.clone().sub(preset.target).normalize()
+  const center = OFFICE_BOUNDS.getCenter(new THREE.Vector3())
+  center.y = 1.55
+
+  const safeNdc = {
+    left: (safe.left / width) * 2 - 1,
+    right: (safe.right / width) * 2 - 1,
+    top: 1 - (safe.top / height) * 2,
+    bottom: 1 - (safe.bottom / height) * 2,
+  }
+
+  const corners = []
+  for (const x of [OFFICE_BOUNDS.min.x, OFFICE_BOUNDS.max.x]) {
+    for (const y of [OFFICE_BOUNDS.min.y, OFFICE_BOUNDS.max.y]) {
+      for (const z of [OFFICE_BOUNDS.min.z, OFFICE_BOUNDS.max.z]) {
+        corners.push(new THREE.Vector3(x, y, z))
+      }
+    }
+  }
+
+  const probe = new THREE.PerspectiveCamera(fov, width / height, 0.1, 160)
+  const target = center.clone()
+  let distance = 30
+
+  for (let pass = 0; pass < 4; pass += 1) {
+    probe.position.copy(target).addScaledVector(direction, distance)
+    probe.lookAt(target)
+    probe.updateMatrixWorld()
+
+    let minX = Infinity
+    let maxX = -Infinity
+    let minY = Infinity
+    let maxY = -Infinity
+    for (const corner of corners) {
+      const projected = corner.clone().project(probe)
+      minX = Math.min(minX, projected.x)
+      maxX = Math.max(maxX, projected.x)
+      minY = Math.min(minY, projected.y)
+      maxY = Math.max(maxY, projected.y)
+    }
+
+    const requiredWidth = safeNdc.right - safeNdc.left
+    const requiredHeight = safeNdc.top - safeNdc.bottom
+    const scale = Math.max((maxX - minX) / requiredWidth, (maxY - minY) / requiredHeight)
+    distance = THREE.MathUtils.clamp(distance * scale, 12, 86)
+  }
+
+  // Keep the orbit pivot on the office. The composition is shifted with a
+  // lens offset instead of panning the pivot into empty space.
+  return {
+    position: target.clone().addScaledVector(direction, distance),
+    target: target.clone(),
+    fov,
+    distance,
+    offsetX: safe.cx - width / 2,
+    offsetY: safe.cy - height / 2,
+  }
 }
 
 const initialView = viewPreset('iso')
@@ -146,11 +284,24 @@ function tweenCamera(position, target, duration = 900) {
 }
 
 function setView(viewName, { animate = true } = {}) {
-  const view = viewPreset(viewName)
+  const view = computeFittedView(viewName)
   if (!view) return
   ui.setView(viewName)
   camera.fov = view.fov
+  if (Math.abs(view.offsetX) > 0.5 || Math.abs(view.offsetY) > 0.5) {
+    camera.setViewOffset(
+      window.innerWidth,
+      window.innerHeight,
+      -view.offsetX,
+      -view.offsetY,
+      window.innerWidth,
+      window.innerHeight,
+    )
+  } else {
+    camera.clearViewOffset()
+  }
   camera.updateProjectionMatrix()
+  controls.maxDistance = Math.max(isPortrait() ? 60 : 44, view.distance * 1.45)
   if (animate && !reduceMotion) {
     tweenCamera(view.position, view.target, 950)
   } else {
@@ -169,9 +320,28 @@ function resetCamera() {
 function focusAgent(id) {
   const agent = simulation.getAgent(id)
   if (!agent) return
-  const target = new THREE.Vector3(agent.position.x, 0.5, agent.position.z)
   const direction = new THREE.Vector3(0.62, 0.54, 0.74).normalize()
-  const position = target.clone().add(direction.multiplyScalar(10.8))
+  const target = new THREE.Vector3(agent.position.x, 0.5, agent.position.z)
+  const focusDistance = window.innerWidth <= 900 ? 14.5 : 10.8
+  const position = target.clone().add(direction.multiplyScalar(focusDistance))
+  camera.clearViewOffset()
+  camera.fov = isPortrait() ? 50 : 40
+  if (window.innerWidth <= 900) {
+    // Lift the robot above the mobile selected-agent sheet with a lens shift
+    // so the orbit pivot can stay exactly on the robot.
+    const panel = document.querySelector('#agent-panel')?.getBoundingClientRect()
+    const panelTop = panel && panel.height > 20 ? panel.top : window.innerHeight * 0.52
+    const desiredY = Math.max(132, panelTop - 84)
+    camera.setViewOffset(
+      window.innerWidth,
+      window.innerHeight,
+      0,
+      window.innerHeight / 2 - desiredY,
+      window.innerWidth,
+      window.innerHeight,
+    )
+  }
+  camera.updateProjectionMatrix()
   ui.setFreeCamera()
   tweenCamera(position, target, 850)
 }
@@ -182,6 +352,14 @@ function focusBoardroom() {
   const position = portrait
     ? new THREE.Vector3(14.0, 16.0, 9.0)
     : new THREE.Vector3(12.0, 12.0, 3.2)
+  if (window.innerWidth <= 900) {
+    const ground = position.clone().sub(target)
+    ground.y = 0
+    ground.normalize()
+    target.addScaledVector(ground, 2.6)
+    position.addScaledVector(ground, 2.6)
+  }
+  camera.clearViewOffset()
   camera.fov = portrait ? 55 : 36
   camera.updateProjectionMatrix()
   ui.setCameraMode('BOARDROOM')
@@ -203,7 +381,7 @@ function selectAgent(id, { focus = false } = {}) {
   selectedId = id
   selectedType = 'agent'
   ui.showAgent(agent)
-  if (focus) focusAgent(id)
+  if (focus || window.innerWidth <= 900) focusAgent(id)
 }
 
 function showExecutiveConsole() {
@@ -300,7 +478,12 @@ ui
   .on('standup', () => conveneStandup({ focus: true }))
   .on('zoom', (direction) => zoomCamera(direction))
   .on('reset-camera', () => resetCamera())
-  .on('view', (view) => setView(view))
+  .on('view', (view) => {
+    // On narrow screens the selected-agent sheet covers the floor plan.
+    // Switching views is an overview action, so dismiss the sheet first.
+    if (window.innerWidth <= 900 && selectedId) clearSelection()
+    setView(view)
+  })
   .on('console-action', (action) => handleConsoleAction(action))
 
 simulation.onChange((type, payload) => {
@@ -394,7 +577,9 @@ window.addEventListener('resize', () => {
   if (nextPortrait !== portraitMode) {
     portraitMode = nextPortrait
     controls.maxDistance = nextPortrait ? 60 : 44
-    if (ui.currentView) setView(ui.currentView, { animate: false })
+  }
+  if (ui.currentView === 'iso' || ui.currentView === 'top') {
+    setView(ui.currentView, { animate: false })
   }
 })
 
@@ -585,7 +770,7 @@ async function boot() {
   pmrem.dispose()
 
   ui.setBootProgress(52, 'ASSEMBLING FLOOR 05')
-  world = createWorld(scene, renderer)
+  world = createWorld(scene, renderer, { lowPower })
   ui.setBootProgress(74, 'WAKING AGENT ROSTER')
 
   // Let the browser paint the boot state before the heavier final shader compile.
@@ -599,6 +784,9 @@ async function boot() {
   ui.setBootProgress(93, 'SYNCING TELEMETRY')
   if (window.innerWidth > 900) selectAgent('nova')
   else ui.clearSelection()
+  // Frame the office against the real HUD geometry once the rails and
+  // selected-agent card have their final size.
+  setView('iso', { animate: false })
   ui.updateClock()
   ui.setBootProgress(100, 'FLOOR 05 ONLINE')
 

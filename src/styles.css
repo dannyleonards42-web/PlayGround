@@ -2343,7 +2343,9 @@ kbd {
 
 @media (max-width: 560px) {
   .brand-sub {
-    display: none;
+    display: block;
+    font-size: 5.5px;
+    letter-spacing: 0.15em;
   }
 
   .brand-title {

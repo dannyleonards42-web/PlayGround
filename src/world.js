@@ -320,6 +320,30 @@ function buildShell(scene, materials) {
   makePendant(-8.15, 0.4, 3.3, Math.PI / 2, 3.64)
   makePendant(7.8, -4.15, 3.9, 0, 3.62)
 
+  // Perimeter ceiling soffit, gold reveal and recessed linear lighting.
+  // The centre stays open so the isometric cutaway can see the floor.
+  const ceiling = new THREE.Group()
+  ceiling.name = 'ceiling-details'
+  box(ceiling, [23.2, 0.18, 0.5], [0, 4.78, -7.55], materials.blackGloss, { castShadow: false })
+  box(ceiling, [0.5, 0.18, 15.9], [-11.3, 4.78, 0], materials.blackGloss, { castShadow: false })
+  box(ceiling, [0.5, 0.18, 8.2], [11.3, 4.78, -3.8], materials.blackGloss, { castShadow: false })
+  box(ceiling, [23.2, 0.03, 0.035], [0, 4.67, -7.32], materials.goldSoft, { castShadow: false })
+  box(ceiling, [0.035, 0.03, 15.9], [-11.07, 4.67, 0], materials.goldSoft, { castShadow: false })
+  box(ceiling, [0.035, 0.03, 8.2], [11.07, 4.67, -3.8], materials.goldSoft, { castShadow: false })
+
+  const ceilingCove = (x, z, length, rotation = 0) => {
+    const cove = new THREE.Group()
+    cove.position.set(x, 4.64, z)
+    cove.rotation.y = rotation
+    box(cove, [length, 0.05, 0.24], [0, 0, 0], materials.blackGloss, { castShadow: false })
+    box(cove, [length - 0.1, 0.014, 0.15], [0, -0.034, 0], materials.warmPanel, { castShadow: false })
+    ceiling.add(cove)
+  }
+  ceilingCove(-2.55, -3.68, 6.6)
+  ceilingCove(-8.15, 0.4, 3.3, Math.PI / 2)
+  ceilingCove(7.8, -4.15, 3.9)
+  group.add(ceiling)
+
   // Circular executive pendant.
   const execPendant = new THREE.Group()
   execPendant.position.set(-2.45, 3.85, -0.95)
@@ -558,6 +582,36 @@ function createRobot(agent, materials) {
     shadow,
     headBaseY: 1.4,
   }
+}
+
+function buildPartitions(scene, materials) {
+  const group = new THREE.Group()
+  group.name = 'glass-partitions'
+
+  // Slim glass dividers between adjacent workstations. They reinforce the
+  // open-plan zoning without blocking sightlines to the robots.
+  const divider = (x, z, rotation = 0, depth = 1.18) => {
+    const panel = new THREE.Group()
+    panel.position.set(x, 0, z)
+    panel.rotation.y = rotation
+    box(panel, [0.028, 1.3, depth], [0, 1.34, 0], materials.glass, {
+      castShadow: false,
+      receiveShadow: false,
+    })
+    box(panel, [0.05, 0.045, depth + 0.07], [0, 2.02, 0], materials.dark, { castShadow: false })
+    box(panel, [0.05, 0.035, depth + 0.07], [0, 0.66, 0], materials.goldSoft, { castShadow: false })
+    box(panel, [0.05, 1.4, 0.05], [0, 1.34, -depth / 2], materials.dark, { castShadow: false })
+    box(panel, [0.05, 1.4, 0.05], [0, 1.34, depth / 2], materials.dark, { castShadow: false })
+    group.add(panel)
+  }
+
+  divider(-4.15, -4.0)
+  divider(-1.175, -4.0)
+  divider(1.72, -4.0)
+  divider(-8.55, 0.45, Math.PI / 2)
+
+  scene.add(group)
+  return group
 }
 
 function buildBoardroom(scene, materials) {
@@ -1000,14 +1054,15 @@ function buildDetails(scene, materials) {
   return group
 }
 
-function addLights(scene) {
+function addLights(scene, lowPower = false) {
   const hemisphere = new THREE.HemisphereLight(0xfff7eb, 0x121214, 0.78)
   scene.add(hemisphere)
 
   const key = new THREE.DirectionalLight(0xfff1dc, 2.05)
   key.position.set(-7, 15, 11)
   key.castShadow = true
-  key.shadow.mapSize.set(1024, 1024)
+  const shadowSize = lowPower ? 512 : 1024
+  key.shadow.mapSize.set(shadowSize, shadowSize)
   key.shadow.camera.left = -14
   key.shadow.camera.right = 14
   key.shadow.camera.top = 13
@@ -1016,7 +1071,7 @@ function addLights(scene) {
   key.shadow.camera.far = 38
   key.shadow.bias = -0.00035
   key.shadow.normalBias = 0.025
-  key.shadow.radius = 4
+  key.shadow.radius = lowPower ? 2 : 4
   scene.add(key)
 
   const rim = new THREE.DirectionalLight(0xb9cada, 0.7)
@@ -1038,8 +1093,8 @@ function addLights(scene) {
   return { hemisphere, key, rim, meetingLight, executiveLight, loungeLight }
 }
 
-function addMotes(scene) {
-  const count = 110
+function addMotes(scene, lowPower = false) {
+  const count = lowPower ? 56 : 110
   const positions = new Float32Array(count * 3)
   const random = (() => {
     let seed = 99
@@ -1149,7 +1204,7 @@ function makePickBox(scene, config) {
   return mesh
 }
 
-export function createWorld(scene, renderer) {
+export function createWorld(scene, renderer, { lowPower = false } = {}) {
   const materials = createMaterials(renderer)
   const staticRoot = new THREE.Group()
   staticRoot.name = 'static-office'
@@ -1170,6 +1225,7 @@ export function createWorld(scene, renderer) {
     robotParts[agent.id] = robot
   }
 
+  const partitions = buildPartitions(staticRoot, materials)
   const boardroom = buildBoardroom(staticRoot, materials)
   const exec = buildExecutiveDesk(staticRoot, materials)
   const lounge = buildLounge(staticRoot, materials)
@@ -1188,8 +1244,8 @@ export function createWorld(scene, renderer) {
 
   mergeStaticMeshes(staticRoot)
 
-  const lights = addLights(scene)
-  const motes = addMotes(scene)
+  const lights = addLights(scene, lowPower)
+  const motes = addMotes(scene, lowPower)
 
   // Transparent pick volumes. They are intentionally excluded from the merge.
   const pickables = []
@@ -1259,6 +1315,7 @@ export function createWorld(scene, renderer) {
   return {
     materials,
     workstations,
+    partitions,
     boardroom,
     exec,
     lounge,
