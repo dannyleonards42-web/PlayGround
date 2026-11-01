@@ -10,6 +10,8 @@ const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').match
 const coarsePointer = window.matchMedia('(pointer: coarse)').matches
 const deviceMemory = Number(navigator.deviceMemory || 8)
 const lowPower = coarsePointer || deviceMemory <= 6
+// Keep the 3D floor above the compact bottom sheets on tablets as well as phones.
+const COMPACT_LAYOUT = 1024
 
 const simulation = new Simulation()
 const ui = new UI(simulation)
@@ -81,6 +83,13 @@ const OFFICE_BOUNDS = new THREE.Box3(
   new THREE.Vector3(11.9, 4.85, 8.1),
 )
 
+// The boardroom gets its own tighter bounds so a stand-up cutaway frames the
+// table, glass walls and seated agents instead of zooming into a wall.
+const BOARDROOM_BOUNDS = new THREE.Box3(
+  new THREE.Vector3(5.15, 0, -6.45),
+  new THREE.Vector3(10.55, 3.7, -1.95),
+)
+
 function elementRect(selector) {
   const element = document.querySelector(selector)
   if (!element) return null
@@ -99,7 +108,7 @@ function getSafeViewport() {
   const leftRail = elementRect('.left-rail')
   const rightRail = elementRect('.right-rail')
   const operations = elementRect('.operations-bar')
-  const mobile = window.innerWidth <= 900
+  const mobile = window.innerWidth <= COMPACT_LAYOUT
 
   let left = margin
   let right = window.innerWidth - margin
@@ -144,17 +153,12 @@ function getSafeViewport() {
   }
 }
 
-function computeFittedView(viewName) {
-  const preset = viewPreset(viewName)
-  if (!preset) return null
-
+function computeFittedFraming(bounds, direction, fov, { centerY = null, minDistance = 8, maxDistance = 86 } = {}) {
   const safe = getSafeViewport()
   const width = window.innerWidth
   const height = window.innerHeight
-  const fov = preset.fov
-  const direction = preset.position.clone().sub(preset.target).normalize()
-  const center = OFFICE_BOUNDS.getCenter(new THREE.Vector3())
-  center.y = 1.55
+  const center = bounds.getCenter(new THREE.Vector3())
+  if (centerY !== null) center.y = centerY
 
   const safeNdc = {
     left: (safe.left / width) * 2 - 1,
@@ -164,9 +168,9 @@ function computeFittedView(viewName) {
   }
 
   const corners = []
-  for (const x of [OFFICE_BOUNDS.min.x, OFFICE_BOUNDS.max.x]) {
-    for (const y of [OFFICE_BOUNDS.min.y, OFFICE_BOUNDS.max.y]) {
-      for (const z of [OFFICE_BOUNDS.min.z, OFFICE_BOUNDS.max.z]) {
+  for (const x of [bounds.min.x, bounds.max.x]) {
+    for (const y of [bounds.min.y, bounds.max.y]) {
+      for (const z of [bounds.min.z, bounds.max.z]) {
         corners.push(new THREE.Vector3(x, y, z))
       }
     }
@@ -196,10 +200,10 @@ function computeFittedView(viewName) {
     const requiredWidth = safeNdc.right - safeNdc.left
     const requiredHeight = safeNdc.top - safeNdc.bottom
     const scale = Math.max((maxX - minX) / requiredWidth, (maxY - minY) / requiredHeight)
-    distance = THREE.MathUtils.clamp(distance * scale, 12, 86)
+    distance = THREE.MathUtils.clamp(distance * scale, minDistance, maxDistance)
   }
 
-  // Keep the orbit pivot on the office. The composition is shifted with a
+  // Keep the orbit pivot on the subject. The composition is shifted with a
   // lens offset instead of panning the pivot into empty space.
   return {
     position: target.clone().addScaledVector(direction, distance),
@@ -209,6 +213,30 @@ function computeFittedView(viewName) {
     offsetX: safe.cx - width / 2,
     offsetY: safe.cy - height / 2,
   }
+}
+
+function computeFittedView(viewName) {
+  const preset = viewPreset(viewName)
+  if (!preset) return null
+  const direction = preset.position.clone().sub(preset.target).normalize()
+  return computeFittedFraming(OFFICE_BOUNDS, direction, preset.fov, { centerY: 1.55, minDistance: 12 })
+}
+
+function applyViewFraming(view) {
+  camera.fov = view.fov
+  if (Math.abs(view.offsetX) > 0.5 || Math.abs(view.offsetY) > 0.5) {
+    camera.setViewOffset(
+      window.innerWidth,
+      window.innerHeight,
+      -view.offsetX,
+      -view.offsetY,
+      window.innerWidth,
+      window.innerHeight,
+    )
+  } else {
+    camera.clearViewOffset()
+  }
+  camera.updateProjectionMatrix()
 }
 
 const initialView = viewPreset('iso')
@@ -238,6 +266,8 @@ let cameraTween = null
 let hoveredId = null
 let selectedId = null
 let selectedType = null
+let focusedAgentId = null
+let lastOverviewView = 'iso'
 let lastTagUpdate = 0
 let lastTime = performance.now()
 let firstFrame = true
@@ -286,21 +316,10 @@ function tweenCamera(position, target, duration = 900) {
 function setView(viewName, { animate = true } = {}) {
   const view = computeFittedView(viewName)
   if (!view) return
+  if (viewName === 'iso' || viewName === 'top') lastOverviewView = viewName
+  focusedAgentId = null
   ui.setView(viewName)
-  camera.fov = view.fov
-  if (Math.abs(view.offsetX) > 0.5 || Math.abs(view.offsetY) > 0.5) {
-    camera.setViewOffset(
-      window.innerWidth,
-      window.innerHeight,
-      -view.offsetX,
-      -view.offsetY,
-      window.innerWidth,
-      window.innerHeight,
-    )
-  } else {
-    camera.clearViewOffset()
-  }
-  camera.updateProjectionMatrix()
+  applyViewFraming(view)
   controls.maxDistance = Math.max(isPortrait() ? 60 : 44, view.distance * 1.45)
   if (animate && !reduceMotion) {
     tweenCamera(view.position, view.target, 950)
@@ -320,13 +339,14 @@ function resetCamera() {
 function focusAgent(id) {
   const agent = simulation.getAgent(id)
   if (!agent) return
+  focusedAgentId = id
   const direction = new THREE.Vector3(0.62, 0.54, 0.74).normalize()
   const target = new THREE.Vector3(agent.position.x, 0.5, agent.position.z)
-  const focusDistance = window.innerWidth <= 900 ? 14.5 : 10.8
+  const focusDistance = window.innerWidth <= COMPACT_LAYOUT ? 14.5 : 10.8
   const position = target.clone().add(direction.multiplyScalar(focusDistance))
   camera.clearViewOffset()
   camera.fov = isPortrait() ? 50 : 40
-  if (window.innerWidth <= 900) {
+  if (window.innerWidth <= COMPACT_LAYOUT) {
     // Lift the robot above the mobile selected-agent sheet with a lens shift
     // so the orbit pivot can stay exactly on the robot.
     const panel = document.querySelector('#agent-panel')?.getBoundingClientRect()
@@ -348,22 +368,18 @@ function focusAgent(id) {
 
 function focusBoardroom() {
   const portrait = isPortrait()
-  const target = new THREE.Vector3(7.2, 0.5, -4.2)
-  const position = portrait
-    ? new THREE.Vector3(14.0, 16.0, 9.0)
-    : new THREE.Vector3(12.0, 12.0, 3.2)
-  if (window.innerWidth <= 900) {
-    const ground = position.clone().sub(target)
-    ground.y = 0
-    ground.normalize()
-    target.addScaledVector(ground, 2.6)
-    position.addScaledVector(ground, 2.6)
-  }
-  camera.clearViewOffset()
-  camera.fov = portrait ? 55 : 36
-  camera.updateProjectionMatrix()
+  const direction = (portrait
+    ? new THREE.Vector3(0.58, 1.25, 0.78)
+    : new THREE.Vector3(0.55, 1.02, 0.72)).normalize()
+  const view = computeFittedFraming(BOARDROOM_BOUNDS, direction, portrait ? 50 : 36, {
+    centerY: 1.25,
+    minDistance: 9,
+    maxDistance: 58,
+  })
+  applyViewFraming(view)
+  controls.maxDistance = Math.max(controls.maxDistance, view.distance * 1.5)
   ui.setCameraMode('BOARDROOM')
-  tweenCamera(position, target, 1050)
+  tweenCamera(view.position, view.target, 1050)
 }
 
 function zoomCamera(direction) {
@@ -381,7 +397,7 @@ function selectAgent(id, { focus = false } = {}) {
   selectedId = id
   selectedType = 'agent'
   ui.showAgent(agent)
-  if (focus || window.innerWidth <= 900) focusAgent(id)
+  if (focus || window.innerWidth <= COMPACT_LAYOUT) focusAgent(id)
 }
 
 function showExecutiveConsole() {
@@ -390,15 +406,20 @@ function showExecutiveConsole() {
   ui.showConsole()
 }
 
-function clearSelection() {
+function clearSelection({ restoreView = true } = {}) {
+  const restoreOverview = restoreView && window.innerWidth <= COMPACT_LAYOUT && focusedAgentId !== null && focusedAgentId === selectedId
   selectedId = null
   selectedType = null
   ui.clearSelection()
+  // On phones the agent sheet opens with an automatic close-up. Closing that
+  // sheet should return to the floor overview, not strand the user in a crop.
+  if (restoreOverview) setView(lastOverviewView)
 }
 
 function conveneStandup({ focus = true } = {}) {
   const started = simulation.conveneStandup()
   if (started) {
+    if (window.innerWidth <= COMPACT_LAYOUT && selectedType) clearSelection({ restoreView: false })
     ui.toast('Executive stand-up convened in the boardroom', 3200)
     if (focus) focusBoardroom()
   }
@@ -467,8 +488,13 @@ ui
   .on('clear', () => clearSelection())
   .on('focus-agent', (id) => focusAgent(id))
   .on('directive', (id, directive) => {
-    const agent = simulation.prioritize(id, directive)
+    const agent = simulation.getAgent(id)
     if (!agent) return
+    if (agent.mode !== 'desk') {
+      ui.toast(`${agent.name} is ${simulation.statusOf(agent).toLowerCase()} — directives resume at the desk`, 3000)
+      return
+    }
+    simulation.prioritize(id, directive)
     const labels = { analyze: 'Deep analysis', review: 'Peer review', sync: 'Agent synchronization' }
     ui.toast(`${agent.name} accepted directive · ${labels[directive]}`, 2800)
     ui.showAgent(agent)
@@ -481,7 +507,7 @@ ui
   .on('view', (view) => {
     // On narrow screens the selected-agent sheet covers the floor plan.
     // Switching views is an overview action, so dismiss the sheet first.
-    if (window.innerWidth <= 900 && selectedId) clearSelection()
+    if (window.innerWidth <= COMPACT_LAYOUT && selectedType) clearSelection()
     setView(view)
   })
   .on('console-action', (action) => handleConsoleAction(action))
@@ -782,7 +808,7 @@ async function boot() {
   }
 
   ui.setBootProgress(93, 'SYNCING TELEMETRY')
-  if (window.innerWidth > 900) selectAgent('nova')
+  if (window.innerWidth > COMPACT_LAYOUT) selectAgent('nova')
   else ui.clearSelection()
   // Frame the office against the real HUD geometry once the rails and
   // selected-agent card have their final size.

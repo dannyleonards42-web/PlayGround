@@ -370,7 +370,10 @@ export class Simulation {
 
   update(dt) {
     if (this.paused) return
-    this.elapsed += dt
+    // Tempo scales the whole simulation clock, not just the task bars, so
+    // 2× also speeds up stand-up walks and the live telemetry cadence.
+    const step = dt * this.speed
+    this.elapsed += step
 
     if (this.meeting) {
       if (this.meeting.phase === 'gather' && this.elapsed > this.meeting.gatherUntil) {
@@ -383,7 +386,7 @@ export class Simulation {
         let allHome = true
         for (const agent of this.agents) {
           if (agent.mode !== 'walking') continue
-          const done = this.moveAgent(agent, dt)
+          const done = this.moveAgent(agent, step)
           if (done) {
             agent.mode = 'desk'
             agent.position.x = agent.home.x
@@ -398,7 +401,7 @@ export class Simulation {
       } else {
         for (const agent of this.agents) {
           if (agent.mode === 'walking') {
-            const done = this.moveAgent(agent, dt)
+            const done = this.moveAgent(agent, step)
             if (done) {
               // Face the centre of the boardroom table.
               agent.mode = 'meeting'
@@ -414,7 +417,7 @@ export class Simulation {
       if (agent.mode !== 'desk') continue
       const task = agent.tasks[agent.taskIndex]
       const variance = 0.86 + ((agent.index * 37) % 23) / 100
-      agent.progress += (dt / task.duration) * variance
+      agent.progress += (step / task.duration) * variance
       agent.metrics.focus = Math.max(86, Math.min(99, 90 + Math.round(agent.progress * 9)))
       if (agent.progress >= 1) {
         agent.progress = 0
@@ -433,7 +436,7 @@ export class Simulation {
       }
     }
 
-    this.nextDashboardEvent -= dt
+    this.nextDashboardEvent -= step
     if (this.nextDashboardEvent <= 0) {
       this.nextDashboardEvent = 9 + Math.random() * 8
       const [message, name] = DASHBOARD_EVENTS[Math.floor(Math.random() * DASHBOARD_EVENTS.length)]

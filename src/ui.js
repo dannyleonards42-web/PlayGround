@@ -242,7 +242,13 @@ export class UI {
     const active = !this.sim.paused
     const task = agent.tasks[agent.taskIndex]
     const modeLabel = agent.mode === 'desk' ? 'AT DESK' : agent.mode === 'meeting' ? 'BOARDROOM' : 'IN TRANSIT'
-    const progressLabel = agent.mode === 'desk' ? 'COMPLETE' : 'PAUSED'
+    const progressLabel = this.sim.paused
+      ? 'ON HOLD'
+      : agent.mode === 'desk'
+        ? 'IN PROGRESS'
+        : agent.mode === 'meeting'
+          ? 'AT STAND-UP'
+          : 'IN TRANSIT'
 
     this.el.agentPanel.innerHTML = `
       <div class="panel-topline">

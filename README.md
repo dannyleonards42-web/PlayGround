@@ -16,3 +16,32 @@
 - 👤 [Explore the creator's projects](https://omgithub.com/dannyleonards42-web).
 - 🌍 [Create with OMGithub](https://omgithub.com).
 <!-- omgithub:readme:end -->
+
+## AGENT HQ
+
+AGENT HQ is a playable, browser-based 3D isometric office simulation. Five miniature robotic agents work across a premium black-and-white floor with warm-gold accents, a central executive desk, a glass boardroom, partitions and a coffee bar. Everything is simulated locally in the browser — no API keys or external AI services are required.
+
+### Play
+
+- **Orbit**: drag
+- **Pan**: right-drag (or two-finger drag on touch)
+- **Zoom**: scroll or pinch
+- **Views**: `I` isometric, `T` top-down, `R` reset
+- **Select an agent**: click a robot, its desk, or a roster row (`1`–`5`)
+- **Directives**: choose Analyze, Review or Sync from the selected-agent panel
+- **Stand-up**: click the boardroom, the CONVENE STAND-UP button, or the executive console
+- **Pause / tempo**: `Space` or the operations bar
+- **Clear selection**: `Esc`
+
+The roster, activity feed, task progress, focus and token metrics all update live. Directive and stand-up states are fully simulated and reset cleanly.
+
+### Development
+
+```bash
+npm ci
+npm run dev      # Vite development server
+npm test         # simulation behaviour tests
+npm run build    # production output in dist/
+```
+
+The scene uses merged static geometry, a capped pixel ratio, reduced shadow resolution and fewer ambient particles on low-power/mobile devices.

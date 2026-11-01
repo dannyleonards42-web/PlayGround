@@ -1995,7 +1995,7 @@ kbd {
   }
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1024px) {
   :root {
     --ui-pad: 12px;
     --top-offset: 70px;
@@ -2066,7 +2066,7 @@ kbd {
     left: 12px;
     right: 12px;
     top: auto;
-    bottom: 194px;
+    bottom: 230px;
     width: auto;
     display: block;
     z-index: 9;
@@ -2363,7 +2363,7 @@ kbd {
   }
 
   .agent-panel {
-    bottom: 194px;
+    bottom: auto;
   }
 
   .agent-status-row {
