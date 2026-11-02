@@ -1,3 +1,5 @@
+import { formatShiftTime } from './game.js'
+
 const icons = {
   close: '<svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 5l10 10M15 5L5 15" stroke="currentColor" stroke-width="1.2"/></svg>',
   arrow: '<svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h9.5M9 4.5L12.5 8 9 11.5" stroke="currentColor" stroke-width="1.05" stroke-linecap="round" stroke-linejoin="round"/></svg>',
@@ -18,11 +20,13 @@ function escape(value) {
 }
 
 export class UI {
-  constructor(simulation) {
+  constructor(simulation, game = null) {
     this.sim = simulation
+    this.game = game
     this.selectedId = null
     this.mode = null
     this.lastRenderKey = ''
+    this.lastBriefKey = ''
     this.feedItems = new Map()
     this.toastTimers = new Map()
     this.callbacks = {}
@@ -50,6 +54,25 @@ export class UI {
       tagName: document.querySelector('#tag-name'),
       tagStatus: document.querySelector('#tag-status'),
       helpDialog: document.querySelector('#help-dialog'),
+      shiftHud: document.querySelector('#shift-hud'),
+      shiftLabel: document.querySelector('#shift-label'),
+      shiftTime: document.querySelector('#shift-time'),
+      shiftScore: document.querySelector('#shift-score'),
+      shiftStreak: document.querySelector('#shift-streak'),
+      shiftConfidence: document.querySelector('#shift-confidence'),
+      shiftConfidenceFill: document.querySelector('#shift-confidence-fill'),
+      shiftBriefs: document.querySelector('#shift-briefs'),
+      shiftStart: document.querySelector('#shift-start'),
+      shiftDialog: document.querySelector('#shift-dialog'),
+      shiftReportKicker: document.querySelector('#shift-report-kicker'),
+      shiftGrade: document.querySelector('#shift-grade'),
+      shiftTitle: document.querySelector('#shift-title'),
+      shiftCopy: document.querySelector('#shift-copy'),
+      shiftFinalScore: document.querySelector('#shift-final-score'),
+      shiftFinalCleared: document.querySelector('#shift-final-cleared'),
+      shiftFinalStreak: document.querySelector('#shift-final-streak'),
+      shiftFinalAccuracy: document.querySelector('#shift-final-accuracy'),
+      shiftFinalLine: document.querySelector('#shift-final-line'),
       boot: document.querySelector('#boot-screen'),
       bootProgress: document.querySelector('#boot-progress'),
       bootStatus: document.querySelector('#boot-status'),
@@ -62,6 +85,7 @@ export class UI {
     this.clockInterval = window.setInterval(() => this.updateClock(), 1000)
     this.bindStaticEvents()
     this.updateControls()
+    this.updateShiftHud()
   }
 
   on(name, callback) {
@@ -115,16 +139,33 @@ export class UI {
       this.emit('reset-camera')
     })
 
+    this.el.shiftBriefs.addEventListener('click', (event) => {
+      const card = event.target.closest('[data-request-id]')
+      if (card) this.emit('brief-select', card.dataset.requestId)
+    })
+    this.el.shiftStart.addEventListener('click', () => this.emit('shift-start'))
+    document.querySelector('#shift-restart').addEventListener('click', () => {
+      this.hideShiftReport()
+      this.emit('shift-start')
+    })
+    document.querySelector('#shift-observe').addEventListener('click', () => this.hideShiftReport())
+    document.querySelector('#shift-dialog-close').addEventListener('click', () => this.hideShiftReport())
+    this.el.shiftDialog.addEventListener('click', (event) => {
+      if (event.target === this.el.shiftDialog) this.hideShiftReport()
+    })
+
     document.querySelectorAll('[data-view]').forEach((button) => {
       button.addEventListener('click', () => this.emit('view', button.dataset.view))
     })
 
     const help = el.helpDialog
     document.querySelector('#help-open').addEventListener('click', () => {
+      this.game?.setPaused(true)
       if (typeof help.showModal === 'function') help.showModal()
       else help.setAttribute('open', '')
     })
     document.querySelector('#help-close').addEventListener('click', () => help.close())
+    help.addEventListener('close', () => this.game?.setPaused(false))
     help.addEventListener('click', (event) => {
       if (event.target === help) help.close()
     })
@@ -241,6 +282,10 @@ export class UI {
     const status = this.sim.statusOf(agent)
     const active = !this.sim.paused
     const task = agent.tasks[agent.taskIndex]
+    const brief = this.game?.requestForAgent(agent.id)
+    const requestedDirective = brief?.directive || null
+    const briefTimer = brief ? formatShiftTime(brief.timeLeft) : null
+    this.el.agentPanel.classList.toggle('has-brief', Boolean(brief))
     const modeLabel = agent.mode === 'desk' ? 'AT DESK' : agent.mode === 'meeting' ? 'BOARDROOM' : 'IN TRANSIT'
     const progressLabel = this.sim.paused
       ? 'ON HOLD'
@@ -266,16 +311,17 @@ export class UI {
         <span class="status-pill${active ? ' is-active' : ''}"><span class="status-dot"></span><span data-agent-status>${escape(status)}</span></span>
         <span class="status-meta">${modeLabel} · ${escape(agent.codename)}</span>
       </div>
-      <div class="task-label"><span>CURRENT TASK</span><span>THREAD / 04</span></div>
+      <div class="task-label task-label--current"><span>CURRENT TASK</span><span>THREAD / 04</span></div>
       <p class="current-task" data-current-task>${escape(task.label)}</p>
       <div class="progress-meta"><span>PROGRESS</span><span><strong data-progress-value>${progress}%</strong> ${progressLabel}</span></div>
       <div class="progress-track"><span class="progress-fill" data-progress-fill style="width:${progress}%"></span></div>
-      <div class="directives">
-        <div class="task-label"><span>ISSUE DIRECTIVE</span><span>IMMEDIATE</span></div>
+      <div class="directives${brief ? ' has-brief' : ''}">
+        <div class="task-label"><span>ISSUE DIRECTIVE</span><span data-brief-timer>${brief ? `BRIEF ${briefTimer}` : 'IMMEDIATE'}</span></div>
+        ${brief ? `<p class="brief-callout"><b>${escape(brief.client)}</b>${escape(brief.title)}</p>` : ''}
         <div class="directive-row">
-          <button class="directive-btn" type="button" data-directive="analyze">ANALYZE</button>
-          <button class="directive-btn" type="button" data-directive="review">REVIEW</button>
-          <button class="directive-btn" type="button" data-directive="sync">SYNC</button>
+          <button class="directive-btn${requestedDirective === 'analyze' ? ' is-requested' : ''}" type="button" data-directive="analyze">ANALYZE</button>
+          <button class="directive-btn${requestedDirective === 'review' ? ' is-requested' : ''}" type="button" data-directive="review">REVIEW</button>
+          <button class="directive-btn${requestedDirective === 'sync' ? ' is-requested' : ''}" type="button" data-directive="sync">SYNC</button>
         </div>
       </div>
       <div class="agent-metrics">
@@ -293,7 +339,8 @@ export class UI {
   }
 
   agentKey(agent) {
-    return `${agent.id}:${agent.taskIndex}:${this.sim.statusOf(agent)}:${agent.mode}:${this.sim.paused}`
+    const brief = this.game?.requestForAgent(agent.id)
+    return `${agent.id}:${agent.taskIndex}:${this.sim.statusOf(agent)}:${agent.mode}:${this.sim.paused}:${brief?.id || ''}`
   }
 
   renderConsole() {
@@ -331,6 +378,102 @@ export class UI {
       <p class="console-note">Executive access confirmed. Floor-wide commands are simulated locally and broadcast to all five agents.</p>
     `
     this.lastRenderKey = `console:${tasks}:${meeting}:${this.sim.paused}`
+  }
+
+  updateShiftHud() {
+    const game = this.game
+    if (!game || !this.el.shiftTime) return
+    const active = Boolean(game.active)
+    const confidence = Math.max(0, Math.min(100, game.confidence))
+
+    this.el.shiftTime.textContent = formatShiftTime(game.timeLeft)
+    this.el.shiftScore.textContent = String(game.score).padStart(4, '0')
+    this.el.shiftStreak.textContent = `×${game.streak}`
+    this.el.shiftConfidence.textContent = `${confidence}%`
+    this.el.shiftConfidenceFill.style.width = `${confidence}%`
+    const paused = (this.sim.paused || game.paused || Boolean(this.sim.meeting)) && active
+    this.el.shiftHud.classList.toggle('is-critical', confidence <= 30)
+    this.el.shiftHud.classList.toggle('is-paused', paused)
+    this.el.shiftHud.classList.toggle('is-inactive', !active)
+    if (this.el.shiftLabel) this.el.shiftLabel.textContent = paused ? 'ON HOLD' : 'SHIFT 01'
+    this.el.shiftStart.hidden = active
+    this.el.shiftStart.textContent = game.ended ? 'NEW SHIFT' : 'START SHIFT'
+    this.updateBriefs(game.requests)
+  }
+
+  updateBriefs(requests) {
+    if (!this.el.shiftBriefs) return
+    const key = requests.map((request) => request.id).join('|')
+    if (key !== this.lastBriefKey) {
+      this.lastBriefKey = key
+      if (!requests.length) {
+        const message = this.game?.ended ? 'SHIFT COMPLETE' : this.game?.active ? 'ALL CLEAR · MONITORING' : 'SHIFT OFFLINE'
+        this.el.shiftBriefs.innerHTML = `<span class="brief-empty"><i></i>${message}</span>`
+      } else {
+        this.el.shiftBriefs.innerHTML = requests
+          .map((request) => {
+            const agent = this.sim.getAgent(request.agentId)
+            const name = agent ? agent.name.toUpperCase() : 'UNIT'
+            return `
+              <button class="brief-card" type="button" data-request-id="${escape(request.id)}" aria-label="${escape(`${request.client}: ${request.title}. ${name} must ${request.directiveLabel.toLowerCase()}.`)}">
+                <span class="brief-head">
+                  <b>${escape(name)}</b>
+                  <em>${escape(request.directiveLabel)}</em>
+                  <span class="brief-time" data-brief-time>${formatShiftTime(request.timeLeft)}</span>
+                </span>
+                <span class="brief-title">${escape(request.title)}</span>
+                <span class="brief-client">${escape(request.client)}</span>
+                <span class="brief-track" aria-hidden="true"><i data-brief-fill></i></span>
+              </button>
+            `
+          })
+          .join('')
+      }
+    }
+
+    this.el.shiftBriefs.querySelectorAll('[data-request-id]').forEach((card) => {
+      const request = requests.find((entry) => entry.id === card.dataset.requestId)
+      if (!request) return
+      const time = card.querySelector('[data-brief-time]')
+      const fill = card.querySelector('[data-brief-fill]')
+      if (time) time.textContent = formatShiftTime(request.timeLeft)
+      if (fill) fill.style.width = `${Math.max(0, Math.min(100, (request.timeLeft / request.duration) * 100))}%`
+      card.classList.toggle('is-urgent', request.timeLeft <= 8)
+    })
+  }
+
+  showShiftReport(report) {
+    const failed = report.reason === 'confidence'
+    this.el.shiftReportKicker.textContent = 'SHIFT REPORT / 01'
+    this.el.shiftGrade.textContent = report.grade || 'D'
+    this.el.shiftGrade.dataset.grade = report.grade || 'D'
+    this.el.shiftTitle.textContent = failed ? 'Floor confidence collapsed' : 'Shift complete'
+    this.el.shiftCopy.textContent = failed
+      ? 'Too many briefs slipped through. The floor is safe, but the client queue is not.'
+      : report.grade === 'S'
+        ? 'An immaculate shift. Every hand-off landed and the floor never lost its rhythm.'
+        : report.grade === 'A'
+          ? 'Strong operating discipline. The queue stayed short and confidence held.'
+          : report.grade === 'B'
+            ? 'A steady shift. A few briefs slipped, but the floor stayed productive.'
+            : 'The floor survived. Tighter dispatch calls will raise the next score.'
+    this.el.shiftFinalScore.textContent = String(report.score)
+    this.el.shiftFinalCleared.textContent = String(report.completed)
+    this.el.shiftFinalStreak.textContent = String(report.bestStreak)
+    this.el.shiftFinalAccuracy.textContent = `${report.accuracy}%`
+    this.el.shiftFinalLine.textContent = `Confidence ${report.confidence}% · ${report.expired} brief${report.expired === 1 ? '' : 's'} expired · ${report.errors} wrong dispatch${report.errors === 1 ? '' : 'es'}.`
+    this.el.shiftStart.hidden = false
+    this.el.shiftStart.textContent = 'NEW SHIFT'
+    if (typeof this.el.shiftDialog.showModal === 'function') {
+      if (!this.el.shiftDialog.open) this.el.shiftDialog.showModal()
+    } else {
+      this.el.shiftDialog.setAttribute('open', '')
+    }
+  }
+
+  hideShiftReport() {
+    if (this.el.shiftDialog.open) this.el.shiftDialog.close()
+    else this.el.shiftDialog.removeAttribute('open')
   }
 
   updateRosterSelection() {
@@ -394,6 +537,7 @@ export class UI {
   tick() {
     const total = this.sim.agents.reduce((sum, agent) => sum + agent.tasksCompleted, 0)
     this.el.completed.textContent = `${total} TASKS`
+    this.updateShiftHud()
     this.el.roster.querySelectorAll('[data-agent-id]').forEach((button) => {
       const agent = this.sim.getAgent(button.dataset.agentId)
       if (!agent) return
@@ -402,6 +546,8 @@ export class UI {
       if (statusLabel && statusLabel.textContent !== status) statusLabel.textContent = status
       const progress = button.querySelector('[data-roster-progress]')
       if (progress) progress.style.width = `${Math.round(agent.progress * 100)}%`
+      const brief = this.game?.requestForAgent(agent.id)
+      button.classList.toggle('is-brief', Boolean(brief))
     })
 
     if (this.mode === 'agent' && this.selectedId) {
@@ -415,9 +561,12 @@ export class UI {
         const value = this.el.agentPanel.querySelector('[data-progress-value]')
         const fill = this.el.agentPanel.querySelector('[data-progress-fill]')
         const status = this.el.agentPanel.querySelector('[data-agent-status]')
+        const briefTimer = this.el.agentPanel.querySelector('[data-brief-timer]')
+        const brief = this.game?.requestForAgent(agent.id)
         if (value) value.textContent = `${Math.round(agent.progress * 100)}%`
         if (fill) fill.style.width = `${Math.round(agent.progress * 100)}%`
         if (status && status.textContent !== this.sim.statusOf(agent)) status.textContent = this.sim.statusOf(agent)
+        if (briefTimer && brief) briefTimer.textContent = `BRIEF ${formatShiftTime(brief.timeLeft)}`
       }
     } else if (this.mode === 'console') {
       const key = `console:${total}:${Boolean(this.sim.meeting)}:${this.sim.paused}`
@@ -427,6 +576,7 @@ export class UI {
 
   setPaused(paused) {
     this.updateControls()
+    this.updateShiftHud()
     if (this.mode === 'console') this.renderConsole()
     if (this.mode === 'agent' && this.selectedId) {
       const agent = this.sim.getAgent(this.selectedId)

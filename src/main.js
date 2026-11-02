@@ -3,6 +3,7 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js'
 import { createWorld } from './world.js'
 import { Simulation } from './simulation.js'
+import { ShiftGame } from './game.js'
 import { UI } from './ui.js'
 
 const canvas = document.querySelector('#scene')
@@ -14,7 +15,8 @@ const lowPower = coarsePointer || deviceMemory <= 6
 const COMPACT_LAYOUT = 1024
 
 const simulation = new Simulation()
-const ui = new UI(simulation)
+const shiftGame = new ShiftGame(simulation)
+const ui = new UI(simulation, shiftGame)
 
 let renderer
 try {
@@ -105,6 +107,7 @@ function elementRect(selector) {
 function getSafeViewport() {
   const margin = 16
   const hud = elementRect('.hud-bar')
+  const shiftHud = elementRect('.shift-hud')
   const leftRail = elementRect('.left-rail')
   const rightRail = elementRect('.right-rail')
   const operations = elementRect('.operations-bar')
@@ -112,7 +115,7 @@ function getSafeViewport() {
 
   let left = margin
   let right = window.innerWidth - margin
-  let top = (hud ? hud.bottom : 0) + 10
+  let top = Math.max((hud ? hud.bottom : 0) + 10, (shiftHud ? shiftHud.bottom : 0) + 8)
   let bottom = window.innerHeight - margin
 
   if (mobile) {
@@ -420,7 +423,13 @@ function conveneStandup({ focus = true } = {}) {
   const started = simulation.conveneStandup()
   if (started) {
     if (window.innerWidth <= COMPACT_LAYOUT && selectedType) clearSelection({ restoreView: false })
-    ui.toast('Executive stand-up convened in the boardroom', 3200)
+    ui.toast(
+      shiftGame.active
+        ? 'Stand-up convened · shift clock paused until agents return'
+        : 'Executive stand-up convened in the boardroom',
+      3200,
+    )
+    ui.updateShiftHud()
     if (focus) focusBoardroom()
   }
 }
@@ -494,10 +503,25 @@ ui
       ui.toast(`${agent.name} is ${simulation.statusOf(agent).toLowerCase()} — directives resume at the desk`, 3000)
       return
     }
+    const activeBrief = shiftGame.requestForAgent(id)
     simulation.prioritize(id, directive)
+    shiftGame.dispatch(id, directive)
     const labels = { analyze: 'Deep analysis', review: 'Peer review', sync: 'Agent synchronization' }
-    ui.toast(`${agent.name} accepted directive · ${labels[directive]}`, 2800)
+    if (!activeBrief) ui.toast(`${agent.name} accepted directive · ${labels[directive]}`, 2800)
     ui.showAgent(agent)
+    ui.updateShiftHud()
+  })
+  .on('brief-select', (requestId) => {
+    const request = shiftGame.requestById(requestId)
+    if (!request) return
+    const agent = simulation.getAgent(request.agentId)
+    if (!agent) return
+    selectAgent(agent.id)
+    ui.toast(`${agent.name.toUpperCase()} selected · issue ${request.directiveLabel}`, 2600)
+  })
+  .on('shift-start', () => {
+    shiftGame.start()
+    ui.toast('New operations shift started · clear the priority briefs', 3000)
   })
   .on('toggle-pause', () => togglePause())
   .on('speed', () => cycleSpeed())
@@ -521,6 +545,35 @@ simulation.onChange((type, payload) => {
   if (type === 'agent' && selectedId && payload.agentId === selectedId) {
     const agent = simulation.getAgent(selectedId)
     if (agent) ui.showAgent(agent)
+  }
+})
+
+shiftGame.onChange((type, payload) => {
+  if (type === 'state' || type === 'start' || type === 'requests') {
+    ui.updateShiftHud()
+  }
+  if (type === 'resolve') {
+    const agent = simulation.getAgent(payload.request.agentId)
+    ui.toast(`${agent?.name || 'Agent'} cleared “${payload.request.title}” · +${payload.points}`, 2800)
+    ui.updateShiftHud()
+    if (selectedId) {
+      const selectedAgent = simulation.getAgent(selectedId)
+      if (selectedAgent) ui.showAgent(selectedAgent)
+    }
+  }
+  if (type === 'expire') {
+    const agent = simulation.getAgent(payload.request.agentId)
+    ui.toast(`Brief expired · ${agent?.name || 'Agent'} missed “${payload.request.title}” · −12 confidence`, 3200)
+    ui.updateShiftHud()
+  }
+  if (type === 'wrong') {
+    const agent = simulation.getAgent(payload.agentId)
+    ui.toast(`Wrong protocol · ${agent?.name || 'Agent'} needs ${payload.requested.toUpperCase()} · −6 confidence`, 3200)
+    ui.updateShiftHud()
+  }
+  if (type === 'end') {
+    ui.updateShiftHud()
+    ui.showShiftReport(payload)
   }
 })
 
@@ -731,7 +784,12 @@ function frame(now) {
   const dt = Math.min(rawDelta, 0.1)
 
   if (!document.hidden) {
-    if (!simulation.paused) simulation.update(dt)
+    if (!simulation.paused) {
+      simulation.update(dt)
+      // Agents cannot accept directives during stand-up, so hold the shift
+      // clock and brief timers until everyone is back at their desks.
+      if (!simulation.meeting) shiftGame.update(dt * simulation.speed)
+    }
     controls.update()
 
     if (cameraTween) {
@@ -822,12 +880,17 @@ async function boot() {
     ui.finishBoot()
   }
 
+  window.setTimeout(() => {
+    if (shiftGame.active) ui.toast('Shift live · open a priority brief, then issue the highlighted directive', 4200)
+  }, 900)
+
   lastTime = performance.now()
   renderer.setAnimationLoop(frame)
 
   window.AGENT_HQ = {
     ready: true,
     simulation,
+    shiftGame,
     ui,
     camera,
     controls,

@@ -4,8 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="theme-color" content="#08090a" />
-    <meta name="description" content="AGENT HQ — a playable 3D isometric office simulation for five autonomous AI agents." />
-    <title>AGENT HQ — Simulated Prototype</title>
+    <meta name="description" content="AGENT HQ — a playable 3D isometric office game. Dispatch five autonomous AI agents, clear priority briefs and hold the floor together." />
+    <title>AGENT HQ — Operations Shift</title>
     <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="./src/styles.css" />
   </head>
@@ -69,6 +69,27 @@
             </button>
           </div>
         </header>
+
+        <section class="shift-hud" id="shift-hud" aria-label="Shift status and priority briefs">
+          <div class="shift-stats">
+            <div class="shift-stat shift-stat--clock">
+              <span class="shift-label" id="shift-label">SHIFT 01</span>
+              <b id="shift-time">02:30</b>
+            </div>
+            <div class="shift-stat">
+              <span class="shift-label">SCORE</span>
+              <b id="shift-score">0000</b>
+              <em id="shift-streak">×1</em>
+            </div>
+            <div class="shift-stat shift-stat--confidence">
+              <span class="shift-label">CONFIDENCE</span>
+              <span class="confidence-track" aria-hidden="true"><i id="shift-confidence-fill"></i></span>
+              <b id="shift-confidence">100%</b>
+            </div>
+            <button class="shift-start" type="button" id="shift-start">START SHIFT</button>
+          </div>
+          <div class="brief-row" id="shift-briefs" aria-live="polite"></div>
+        </section>
 
         <aside class="left-rail" aria-label="Selected unit details">
           <section class="panel agent-panel" id="agent-panel" aria-live="polite"></section>
@@ -182,7 +203,7 @@
           </button>
         </div>
         <h2>Welcome to <em>AGENT HQ</em></h2>
-        <p class="dialog-lede">A live, simulated executive floor for five autonomous agents. Everything you see runs locally in your browser — no keys, no external AI services.</p>
+        <p class="dialog-lede">Run a two-and-a-half-minute operations shift with five autonomous agents. Priority briefs land in the strip above the floor — open one, select the assigned agent, then issue the highlighted directive before the clock runs out.</p>
         <div class="dialog-grid">
           <div>
             <span class="panel-kicker">NAVIGATION</span>
@@ -197,21 +218,48 @@
           <div>
             <span class="panel-kicker">OPERATIONS</span>
             <dl class="shortcut-list">
+              <div><dt>Brief card</dt><dd>Select its agent</dd></div>
+              <div><dt>Highlighted key</dt><dd>Correct directive</dd></div>
               <div><dt><kbd>1</kbd>–<kbd>5</kbd></dt><dd>Select agent</dd></div>
               <div><dt><kbd>Space</kbd></dt><dd>Pause / resume</dd></div>
               <div><dt><kbd>Esc</kbd></dt><dd>Clear selection</dd></div>
-              <div><dt>Click desk</dt><dd>Select its agent</dd></div>
-              <div><dt>Click boardroom</dt><dd>Convene stand-up</dd></div>
             </dl>
           </div>
         </div>
         <div class="dialog-note">
           <span class="note-mark">A</span>
-          <p><b>Executive tip.</b> Select an agent to issue a directive. Open the central executive console for floor-wide commands. The coffee bar is operational.</p>
+          <p><b>Keep confidence alive.</b> A cleared brief earns points and builds your streak. A wrong directive costs 6 confidence; an expired brief costs 12. Reach 2,400 points for the top grade — or just keep the floor online until the shift ends.</p>
         </div>
         <div class="dialog-footer">
           <span>AGENT HQ · SIMULATED PROTOTYPE · BUILD 0.9.4</span>
           <span>DESIGNED FOR MOBILE SILICON</span>
+        </div>
+      </dialog>
+
+      <dialog id="shift-dialog" class="shift-dialog">
+        <div class="dialog-top">
+          <span class="panel-kicker" id="shift-report-kicker">SHIFT REPORT / 01</span>
+          <button type="button" class="icon-btn" id="shift-dialog-close" aria-label="Close shift report">
+            <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 5l10 10M15 5L5 15" stroke="currentColor" stroke-width="1.2"/></svg>
+          </button>
+        </div>
+        <div class="shift-report-head">
+          <span class="shift-grade" id="shift-grade">A</span>
+          <div>
+            <h2 id="shift-title">Shift complete</h2>
+            <p id="shift-copy">The floor held together. Here is how the team performed.</p>
+          </div>
+        </div>
+        <div class="shift-report-stats">
+          <div><span>FINAL SCORE</span><b id="shift-final-score">0</b></div>
+          <div><span>BRIEFS CLEARED</span><b id="shift-final-cleared">0</b></div>
+          <div><span>BEST STREAK</span><b id="shift-final-streak">0</b></div>
+          <div><span>ACCURACY</span><b id="shift-final-accuracy">100%</b></div>
+        </div>
+        <p class="shift-report-line" id="shift-final-line">Confidence held at 100%.</p>
+        <div class="shift-report-actions">
+          <button class="shift-report-primary" type="button" id="shift-restart">START NEXT SHIFT</button>
+          <button class="shift-report-secondary" type="button" id="shift-observe">OBSERVE THE FLOOR</button>
         </div>
       </dialog>
 
