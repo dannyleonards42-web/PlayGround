@@ -1,0 +1,17 @@
+{
+  "name": "agent-hq",
+  "version": "2.0.0",
+  "private": true,
+  "description": "AGENT HQ — real research operations for DEEMANNIE'S DIGITAL",
+  "type": "module",
+  "engines": {
+    "node": ">=20.11"
+  },
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "node --watch server/index.js",
+    "test": "node --test test/*.test.js",
+    "build": "node scripts/build.js",
+    "check": "node scripts/check.js"
+  }
+}

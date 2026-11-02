@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#0a0b0c">
+    <meta name="description" content="AGENT HQ — real research operations for DEEMANNIE'S DIGITAL.">
+    <title>AGENT HQ — Real Operations</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body>
+    <div class="ambient" aria-hidden="true"></div>
+    <a class="skip-link" href="#main">Skip to mission control</a>
+
+    <header class="topbar">
+      <div class="brand-block">
+        <div class="brand-mark" aria-hidden="true">A<span>/</span>H</div>
+        <div>
+          <p class="brand-name">AGENT HQ</p>
+          <p class="brand-org">DEEMANNIE'S DIGITAL</p>
+        </div>
+      </div>
+      <div class="topbar-center">
+        <span class="micro-label">MODE</span>
+        <strong>REAL OPERATIONS</strong>
+        <span class="slash">/</span>
+        <span class="micro-label">PHASE</span>
+        <strong>02</strong>
+      </div>
+      <div class="topbar-right">
+        <div class="bridge-state" id="bridge-state">
+          <span class="dot" aria-hidden="true"></span>
+          <span id="bridge-label">BRIDGE CHECK</span>
+        </div>
+        <time id="utc-clock" class="clock">--:--:-- UTC</time>
+      </div>
+    </header>
+
+    <div class="app-shell">
+      <aside class="rail">
+        <nav class="nav" aria-label="Mission control sections">
+          <button class="nav-item is-active" data-view="overview" type="button">
+            <span class="nav-index">01</span><span>Overview</span>
+          </button>
+          <button class="nav-item" data-view="prospects" type="button">
+            <span class="nav-index">02</span><span>Prospects</span><span class="nav-count" id="nav-prospects">0</span>
+          </button>
+          <button class="nav-item" data-view="tasks" type="button">
+            <span class="nav-index">03</span><span>Tasks</span><span class="nav-count" id="nav-tasks">0</span>
+          </button>
+          <button class="nav-item" data-view="approvals" type="button">
+            <span class="nav-index">04</span><span>Approvals</span><span class="nav-count" id="nav-approvals">0</span>
+          </button>
+          <button class="nav-item" data-view="evidence" type="button">
+            <span class="nav-index">05</span><span>Evidence</span>
+          </button>
+        </nav>
+
+        <section class="agent-panel" aria-labelledby="agent-heading">
+          <div class="agent-head">
+            <div class="agent-orb" id="agent-orb" aria-hidden="true">N</div>
+            <div>
+              <p class="micro-label" id="agent-heading">ASSIGNED AGENT</p>
+              <h2>NOVA <span class="agent-id">01</span></h2>
+            </div>
+          </div>
+          <p class="agent-role">Research &amp; Opportunity Lead</p>
+          <div class="agent-status-line">
+            <span class="status-pill" id="agent-status">IDLE</span>
+            <span class="muted" id="agent-last-active">No runs yet</span>
+          </div>
+          <dl class="agent-stats">
+            <div><dt>Completed</dt><dd id="agent-completed">0</dd></div>
+            <div><dt>Failed</dt><dd id="agent-failed">0</dd></div>
+            <div><dt>Awaiting</dt><dd id="agent-awaiting">0</dd></div>
+          </dl>
+          <div class="agent-task" id="agent-current-task">No active task.</div>
+        </section>
+
+        <section class="guardrails" aria-labelledby="guardrails-heading">
+          <p class="micro-label" id="guardrails-heading">HARD LIMITS</p>
+          <ul>
+            <li>Read-only research</li>
+            <li>No messages sent</li>
+            <li>No publishing</li>
+            <li>No spending</li>
+          </ul>
+          <p class="guardrails-note">Approval releases a draft for a human. It never sends.</p>
+        </section>
+
+        <div class="rail-foot">
+          <span class="dot dot-small" aria-hidden="true"></span>
+          <span>Local execution</span>
+          <span class="slash">/</span>
+          <span>No API keys</span>
+        </div>
+      </aside>
+
+      <main class="workspace" id="main">
+        <section class="view is-active" id="view-overview" data-view-panel="overview" aria-labelledby="overview-heading">
+          <div class="hero">
+            <div class="hero-copy">
+              <p class="eyebrow"><span class="eyebrow-line"></span>PHASE 02 / REAL OPERATIONS</p>
+              <h1 id="overview-heading">Put NOVA<br><em>to work.</em></h1>
+              <p class="lede">
+                Find real prospects, inspect real websites, and keep every claim attached to its source.
+                This is the operational desk — not an animation.
+              </p>
+              <div class="checkpoint" id="checkpoint-strip">
+                <div>
+                  <span class="micro-label">CHECKPOINT</span>
+                  <strong>870d509</strong>
+                  <span class="status-pill status-failed" id="checkpoint-status">NOT FOUND</span>
+                </div>
+                <p id="checkpoint-note">Auditing repository baseline…</p>
+              </div>
+            </div>
+            <div class="hero-aside">
+              <div class="hero-signal">
+                <span class="micro-label">EXECUTION PROOF</span>
+                <strong id="hero-proof">NO RUNS YET</strong>
+                <p>Verified results only. A task becomes COMPLETED after its results are persisted and readable through the API.</p>
+              </div>
+              <div class="hero-timestamp">
+                <span class="micro-label">RESEARCH SOURCE</span>
+                <p>OpenStreetMap + direct HTTP</p>
+                <span class="micro-label">OUTBOUND</span>
+                <p class="locked">LOCKED</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="command-grid">
+            <section class="panel assignment-panel" aria-labelledby="assignment-heading">
+              <div class="panel-head">
+                <div>
+                  <p class="micro-label">ASSIGNMENT 001</p>
+                  <h2 id="assignment-heading">Three real prospects.<br>Evidence attached.</h2>
+                </div>
+                <span class="stamp">LIVE WEB</span>
+              </div>
+              <form id="research-form" novalidate>
+                <div class="field-row">
+                  <label class="field">
+                    <span>NICHE</span>
+                    <input id="niche" name="niche" value="bakery" maxlength="80" autocomplete="off" required>
+                  </label>
+                  <label class="field">
+                    <span>CITY / MARKET</span>
+                    <input id="city" name="city" value="Portland, Oregon" maxlength="100" autocomplete="off" required>
+                  </label>
+                  <label class="field field-count">
+                    <span>COUNT</span>
+                    <select id="count" name="count">
+                      <option>1</option>
+                      <option>2</option>
+                      <option selected>3</option>
+                      <option>4</option>
+                      <option>5</option>
+                    </select>
+                  </label>
+                </div>
+                <div class="form-actions">
+                  <button class="button button-primary" type="submit" id="submit-research">
+                    <span>ASSIGN TO NOVA</span><span aria-hidden="true">→</span>
+                  </button>
+                  <button class="button button-ghost" type="button" id="fill-assignment">Reset to first mission</button>
+                </div>
+                <p class="form-note">
+                  Public-data discovery and direct homepage inspection. No account access, no outreach, no spend.
+                </p>
+                <p class="form-error" id="form-error" role="alert" hidden></p>
+              </form>
+            </section>
+
+            <section class="panel live-panel" aria-labelledby="live-heading">
+              <div class="panel-head compact">
+                <div>
+                  <p class="micro-label">EXECUTION STREAM</p>
+                  <h2 id="live-heading">Now running</h2>
+                </div>
+                <span class="status-pill status-idle" id="live-status">IDLE</span>
+              </div>
+              <div id="live-body" class="live-body">
+                <div class="empty-state compact-empty">
+                  <span class="empty-glyph">⌁</span>
+                  <p>No task submitted yet.</p>
+                  <span>Assign the first mission to start a real run.</span>
+                </div>
+              </div>
+              <button class="text-button" type="button" id="open-live-task" hidden>Open task record <span aria-hidden="true">↗</span></button>
+            </section>
+          </div>
+
+          <section class="metrics" aria-label="Operational metrics">
+            <article class="metric">
+              <span class="micro-label">VERIFIED PROSPECTS</span>
+              <strong id="stat-prospects">0</strong>
+              <p>Name + listing + live site</p>
+            </article>
+            <article class="metric">
+              <span class="micro-label">VERIFIED FACTS</span>
+              <strong id="stat-evidence">0</strong>
+              <p>Each with a source URL</p>
+            </article>
+            <article class="metric">
+              <span class="micro-label">SUCCESS RATE</span>
+              <strong id="stat-success">—</strong>
+              <p id="stat-success-note">No runs recorded</p>
+            </article>
+            <article class="metric">
+              <span class="micro-label">RESEARCH RUNS</span>
+              <strong id="stat-runs">0</strong>
+              <p id="stat-last-run">Awaiting first assignment</p>
+            </article>
+          </section>
+
+          <div class="overview-columns">
+            <section class="panel results-preview" aria-labelledby="preview-heading">
+              <div class="panel-head compact">
+                <div>
+                  <p class="micro-label">LATEST DELIVERY</p>
+                  <h2 id="preview-heading">Prospect board</h2>
+                </div>
+                <button class="text-button" type="button" data-nav="prospects">View all <span aria-hidden="true">→</span></button>
+              </div>
+              <div id="latest-results-list" class="prospect-stack">
+                <div class="empty-state">
+                  <span class="empty-glyph">◎</span>
+                  <p>No delivered research yet.</p>
+                  <span>The first assignment will populate this board with sourced findings.</span>
+                </div>
+              </div>
+            </section>
+
+            <aside class="panel activity-panel" aria-labelledby="activity-heading">
+              <div class="panel-head compact">
+                <div>
+                  <p class="micro-label">AUDIT TRAIL</p>
+                  <h2 id="activity-heading">Activity</h2>
+                </div>
+                <span class="live-dot" aria-hidden="true"></span>
+              </div>
+              <ol id="activity-list" class="activity-list">
+                <li class="empty-activity">No activity recorded.</li>
+              </ol>
+            </aside>
+          </div>
+        </section>
+
+        <section class="view" id="view-prospects" data-view-panel="prospects" aria-labelledby="prospects-heading" hidden>
+          <div class="view-head">
+            <div>
+              <p class="eyebrow"><span class="eyebrow-line"></span>RESEARCH OUTPUT</p>
+              <h1 id="prospects-heading">Prospect board</h1>
+              <p class="view-lede">Verified observations first. Assumptions are labelled and kept separate.</p>
+            </div>
+            <div class="view-actions">
+              <input class="search" id="prospect-search" type="search" placeholder="Filter by name or city" aria-label="Filter prospects">
+              <button class="button button-ghost" type="button" data-nav="overview">Run new research</button>
+            </div>
+          </div>
+          <div id="prospects-list" class="prospect-grid">
+            <div class="empty-state wide-empty">
+              <span class="empty-glyph">◎</span>
+              <p>No prospects delivered yet.</p>
+              <span>Assign the first mission from Overview. NOVA will not invent results if discovery or inspection fails.</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="view" id="view-tasks" data-view-panel="tasks" aria-labelledby="tasks-heading" hidden>
+          <div class="view-head">
+            <div>
+              <p class="eyebrow"><span class="eyebrow-line"></span>EXECUTION RECORDS</p>
+              <h1 id="tasks-heading">Task ledger</h1>
+              <p class="view-lede">Queued, running, completed, failed, or awaiting approval — never cosmetically completed.</p>
+            </div>
+            <button class="button button-primary" type="button" data-nav="overview">New assignment <span aria-hidden="true">→</span></button>
+          </div>
+          <div id="tasks-list" class="task-list">
+            <div class="empty-state wide-empty"><p>No tasks recorded.</p></div>
+          </div>
+        </section>
+
+        <section class="view" id="view-approvals" data-view-panel="approvals" aria-labelledby="approvals-heading" hidden>
+          <div class="view-head">
+            <div>
+              <p class="eyebrow"><span class="eyebrow-line"></span>HUMAN CONTROL</p>
+              <h1 id="approvals-heading">Approvals</h1>
+              <p class="view-lede">Drafts stop here. Approval records intent; it does not send email or contact anyone.</p>
+            </div>
+          </div>
+          <div class="approval-banner">
+            <strong>OUTBOUND IS LOCKED.</strong>
+            <span>No message is sent, no site is published, no money is spent by AGENT HQ.</span>
+          </div>
+          <div id="approvals-list" class="approval-list">
+            <div class="empty-state wide-empty">
+              <span class="empty-glyph">⌑</span>
+              <p>No drafts awaiting approval.</p>
+              <span>Open a delivered prospect and choose “Draft outreach” to create one.</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="view" id="view-evidence" data-view-panel="evidence" aria-labelledby="evidence-heading" hidden>
+          <div class="view-head">
+            <div>
+              <p class="eyebrow"><span class="eyebrow-line"></span>SOURCE LEDGER</p>
+              <h1 id="evidence-heading">Evidence ledger</h1>
+              <p class="view-lede">Every verified fact carries its source and observation timestamp. Assumptions cite the facts they rely on.</p>
+            </div>
+            <input class="search" id="evidence-search" type="search" placeholder="Filter evidence" aria-label="Filter evidence">
+          </div>
+          <div id="evidence-list" class="evidence-ledger">
+            <div class="empty-state wide-empty"><p>No evidence recorded yet.</p></div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <dialog id="detail-dialog" class="detail-dialog" aria-labelledby="detail-title">
+      <div class="dialog-topline">
+        <span class="micro-label" id="detail-kicker">RECORD</span>
+        <button class="icon-button" type="button" id="detail-close" aria-label="Close detail">×</button>
+      </div>
+      <div id="detail-content"></div>
+    </dialog>
+
+    <div class="toast-region" id="toast-region" aria-live="polite" aria-atomic="true"></div>
+
+    <script type="module" src="/app.js"></script>
+  </body>
+</html>

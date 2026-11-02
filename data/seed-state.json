@@ -1,0 +1,1316 @@
+{
+  "schemaVersion": 2,
+  "revision": 13,
+  "generatedAt": "2026-11-02T16:19:10.866Z",
+  "phase": "02",
+  "org": {
+    "name": "DEEMANNIE'S DIGITAL",
+    "unit": "AGENT HQ",
+    "mode": "REAL OPERATIONS"
+  },
+  "meta": {
+    "phase": "02",
+    "checkpoint": {
+      "requested": "870d509",
+      "found": false,
+      "baselineHead": "2aee5e6",
+      "note": "The requested checkpoint was not present in this repository at build time."
+    },
+    "seeded": false,
+    "seededFrom": null,
+    "seededAt": null,
+    "sourceGeneratedAt": null,
+    "archive": {
+      "kind": "verified-real-run",
+      "taskId": "tsk_0c378ad6c6d7",
+      "sourceGeneratedAt": "2026-11-02T16:19:03.068Z",
+      "capturedAt": "2026-11-02T16:19:10.904Z",
+      "note": "Captured from a live OpenStreetMap + direct HTTP research run. Contains no credentials or customer data."
+    }
+  },
+  "agent": {
+    "id": "nova",
+    "name": "NOVA",
+    "callsign": "NOVA-01",
+    "role": "Research & Opportunity Lead",
+    "status": "IDLE",
+    "currentTaskId": null,
+    "lastActiveAt": "2026-11-02T16:19:03.068Z",
+    "lastTaskId": "tsk_0c378ad6c6d7",
+    "lastTaskStatus": "COMPLETED",
+    "lastError": null,
+    "stats": {
+      "submitted": 1,
+      "completed": 1,
+      "failed": 0,
+      "awaiting": 0
+    },
+    "capabilities": [
+      "OpenStreetMap discovery",
+      "Direct homepage inspection",
+      "Evidence synthesis",
+      "Approval-gated outreach drafts"
+    ]
+  },
+  "metrics": {
+    "totalTasks": 1,
+    "completed": 1,
+    "failed": 0,
+    "running": 0,
+    "queued": 0,
+    "awaitingApproval": 0,
+    "researchRuns": 1,
+    "prospects": 3,
+    "verifiedProspects": 3,
+    "facts": 50,
+    "assumptions": 9,
+    "successRate": 100,
+    "averageDurationMs": 4162,
+    "lastCompletedAt": "2026-11-02T16:19:03.068Z",
+    "pendingApprovals": 0
+  },
+  "tasks": [
+    {
+      "id": "tsk_0c378ad6c6d7",
+      "type": "prospect_research",
+      "input": {
+        "niche": "bakery",
+        "city": "Portland, Oregon",
+        "count": 3,
+        "requestedBy": "HQ operator"
+      },
+      "title": "Research 3 bakery prospects in Portland, Oregon",
+      "status": "COMPLETED",
+      "createdAt": "2026-11-02T16:18:58.905Z",
+      "updatedAt": "2026-11-02T16:19:03.068Z",
+      "queuedAt": "2026-11-02T16:18:58.905Z",
+      "startedAt": "2026-11-02T16:18:58.906Z",
+      "completedAt": "2026-11-02T16:19:03.068Z",
+      "durationMs": 4162,
+      "attempts": 1,
+      "retryOf": null,
+      "progress": {
+        "phase": "COMPLETED",
+        "percent": 100,
+        "message": "Results persisted and delivered."
+      },
+      "events": [
+        {
+          "at": "2026-11-02T16:18:58.905Z",
+          "status": "QUEUED",
+          "message": "Task accepted and queued for the execution bridge."
+        },
+        {
+          "at": "2026-11-02T16:18:58.906Z",
+          "status": "RUNNING",
+          "message": "Execution bridge accepted the task.",
+          "phase": "STARTING"
+        },
+        {
+          "at": "2026-11-02T16:18:58.907Z",
+          "status": "RUNNING",
+          "message": "Searching OpenStreetMap for bakery in Portland, Oregon.",
+          "phase": "DISCOVERING"
+        },
+        {
+          "at": "2026-11-02T16:18:59.048Z",
+          "status": "RUNNING",
+          "message": "Inspecting Bowery Bagels (1/6).",
+          "phase": "AUDITING"
+        },
+        {
+          "at": "2026-11-02T16:19:03.065Z",
+          "status": "RUNNING",
+          "message": "Synthesising 3 evidence-backed prospect record(s).",
+          "phase": "SYNTHESIZING"
+        },
+        {
+          "at": "2026-11-02T16:19:03.066Z",
+          "status": "RUNNING",
+          "message": "Verifying that results are persisted and retrievable.",
+          "phase": "DELIVERING"
+        },
+        {
+          "at": "2026-11-02T16:19:03.068Z",
+          "status": "COMPLETED",
+          "message": "Results persisted and delivered to the AGENT HQ interface.",
+          "delivery": "Persisted JSON + HTTP API + SSE"
+        }
+      ],
+      "results": {
+        "assignment": {
+          "niche": "bakery",
+          "city": "Portland, Oregon",
+          "requestedCount": 3,
+          "returnedCount": 3,
+          "requestedBy": "HQ operator",
+          "provider": "OpenStreetMap Nominatim + direct homepage inspection",
+          "startedAt": "2026-11-02T16:18:58.907Z",
+          "completedAt": "2026-11-02T16:19:03.066Z"
+        },
+        "prospects": [
+          {
+            "id": "prospect_p2",
+            "rank": 1,
+            "name": "Coco Donuts",
+            "location": "Coco Donuts, 2735, Northeast Broadway, Grant Park, Portland, Multnomah County, Oregon, 97232, United States",
+            "category": "bakery",
+            "coordinates": {
+              "lat": 45.5352909,
+              "lon": -122.637255
+            },
+            "osm": {
+              "type": "node",
+              "id": 1950017387,
+              "url": "https://www.openstreetmap.org/node/1950017387"
+            },
+            "website": {
+              "url": "https://cocodonuts.com/",
+              "finalUrl": "https://www.cocodonuts.com/",
+              "status": 200,
+              "verified": true,
+              "title": "Gallery | Coco Donuts",
+              "generator": "Square Online",
+              "bytes": 59041,
+              "elapsedMs": 867,
+              "checkedAt": "2026-11-02T16:19:00.369Z",
+              "identityMatch": true,
+              "locationMatch": false,
+              "limitation": null
+            },
+            "verification": {
+              "status": "VERIFIED",
+              "identity": "MATCHED",
+              "location": "SOURCE_LISTED",
+              "website": "VERIFIED",
+              "label": "Name, listing and live website cross-checked; location is from the source listing only"
+            },
+            "opportunity": {
+              "score": 50,
+              "priority": "HOT",
+              "headline": "2 observable website gaps led by no direct contact action",
+              "summary": "Coco Donuts has a live, identifiable website. Observed gaps: no direct contact action and missing meta description. These are static-HTML observations, not measured revenue losses.",
+              "signals": [
+                {
+                  "id": "p2_s1",
+                  "label": "No direct contact action",
+                  "weight": 16,
+                  "severity": 3,
+                  "factId": "p2_f10",
+                  "recommendation": "Add a clear contact action above the fold."
+                },
+                {
+                  "id": "p2_s2",
+                  "label": "Missing meta description",
+                  "weight": 10,
+                  "severity": 2,
+                  "factId": "p2_f6",
+                  "recommendation": "Write a concise, location-specific meta description."
+                },
+                {
+                  "id": "p2_s3",
+                  "label": "No online ordering or booking path",
+                  "weight": 8,
+                  "severity": 2,
+                  "factId": "p2_f11",
+                  "recommendation": "Test a simple order/reservation call to action."
+                },
+                {
+                  "id": "p2_s4",
+                  "label": "No local-business structured data",
+                  "weight": 5,
+                  "severity": 1,
+                  "factId": "p2_f14",
+                  "recommendation": "Add LocalBusiness JSON-LD with verified details."
+                },
+                {
+                  "id": "p2_s5",
+                  "label": "No menu navigation link",
+                  "weight": 4,
+                  "severity": 1,
+                  "factId": "p2_f12",
+                  "recommendation": "Expose the menu directly in the primary navigation."
+                },
+                {
+                  "id": "p2_s6",
+                  "label": "City absent from page title",
+                  "weight": 4,
+                  "severity": 1,
+                  "factId": "p2_f4",
+                  "recommendation": "Include the service city in the page title where natural."
+                },
+                {
+                  "id": "p2_s7",
+                  "label": "No social profiles linked",
+                  "weight": 3,
+                  "severity": 1,
+                  "factId": "p2_f13",
+                  "recommendation": "Link active profiles so visitors can verify the business."
+                }
+              ],
+              "outreachAngle": "A concise, evidence-led teardown focused on “No direct contact action” and “Missing meta description”."
+            },
+            "checks": {
+              "title": "Gallery | Coco Donuts",
+              "metaDescription": null,
+              "viewport": true,
+              "https": true,
+              "hsts": true,
+              "social": [],
+              "email": false,
+              "phone": false,
+              "contactForm": false,
+              "ordering": false,
+              "menuLink": false,
+              "structuredData": false,
+              "analytics": true,
+              "copyrightYear": null,
+              "platform": "Square Online",
+              "bytes": 59041,
+              "elapsedMs": 867,
+              "identityMatch": true,
+              "locationMatch": false
+            },
+            "facts": [
+              {
+                "id": "p2_f1",
+                "type": "verified",
+                "statement": "OpenStreetMap lists “Coco Donuts” at Coco Donuts, 2735, Northeast Broadway, Grant Park, Portland, Multnomah County, Oregon, 97232, United States.",
+                "source": {
+                  "label": "OpenStreetMap listing for Coco Donuts",
+                  "url": "https://www.openstreetmap.org/node/1950017387",
+                  "type": "map-listing"
+                },
+                "observedAt": "2026-11-02T16:18:59.036Z",
+                "method": "Public Nominatim search over OpenStreetMap community data"
+              },
+              {
+                "id": "p2_f2",
+                "type": "verified",
+                "statement": "OpenStreetMap lists https://cocodonuts.com/ as the website for this business.",
+                "source": {
+                  "label": "OpenStreetMap listing for Coco Donuts",
+                  "url": "https://www.openstreetmap.org/node/1950017387",
+                  "type": "map-listing"
+                },
+                "observedAt": "2026-11-02T16:18:59.036Z",
+                "method": "Public Nominatim search over OpenStreetMap community data"
+              },
+              {
+                "id": "p2_f3",
+                "type": "verified",
+                "statement": "Homepage responded HTTP 200 after 1 redirect(s) at https://www.cocodonuts.com/.",
+                "source": {
+                  "label": "Coco Donuts homepage",
+                  "url": "https://www.cocodonuts.com/",
+                  "type": "website"
+                },
+                "observedAt": "2026-11-02T16:19:00.369Z",
+                "method": "Direct HTTP GET with redirect and SSRF validation"
+              },
+              {
+                "id": "p2_f4",
+                "type": "verified",
+                "statement": "Homepage title: “Gallery | Coco Donuts”.",
+                "source": {
+                  "label": "Coco Donuts homepage",
+                  "url": "https://www.cocodonuts.com/",
+                  "type": "website"
+                },
+                "observedAt": "2026-11-02T16:19:00.369Z",
+                "method": "Direct HTTP GET; static HTML inspection (JavaScript not executed)"
+              },
+              {
+                "id": "p2_f5",
+                "type": "verified",
+                "statement": "The homepage title contains a distinctive token from the source business name “Coco Donuts”.",
+                "source": {
+                  "label": "Coco Donuts homepage",
+                  "url": "https://www.cocodonuts.com/",
+                  "type": "website"
+                },
+                "observedAt": "2026-11-02T16:19:00.369Z",
+                "method": "Direct HTTP GET; static HTML inspection (JavaScript not executed)"
+              },
+              {
+                "id": "p2_f6",
+                "type": "verified",
+                "statement": "No meta description is present in the delivered HTML.",
+                "source": {
+                  "label": "Coco Donuts homepage",
+                  "url": "https://www.cocodonuts.com/",
+                  "type": "website"
+                },
+                "observedAt": "2026-11-02T16:19:00.369Z",
+                "method": "Direct HTTP GET; static HTML inspection (JavaScript not executed)"
+              },
+              {
+                "id": "p2_f7",
+                "type": "verified",
+                "statement": "A viewport meta tag is present, declaring a responsive layout.",
+                "source": {
+                  "label": "Coco Donuts homepage",
+                  "url": "https://www.cocodonuts.com/",
+                  "type": "website"
+                },
+                "observedAt": "2026-11-02T16:19:00.369Z",
+                "method": "Direct HTTP GET; static HTML inspection (JavaScript not executed)"
+              },
+              {
+                "id": "p2_f8",
+                "type": "verified",
+                "statement": "Homepage HTML payload is 58 KB and responded in 867 ms.",
+                "source": {
+                  "label": "Coco Donuts homepage",
+                  "url": "https://www.cocodonuts.com/",
+                  "type": "website"
+                },
+                "observedAt": "2026-11-02T16:19:00.369Z",
+                "method": "Direct HTTP GET; static HTML inspection (JavaScript not executed)"
+              },
+              {
+                "id": "p2_f9",
+                "type": "verified",
+                "statement": "Detected publishing platform: Square Online.",
+                "source": {
+                  "label": "Coco Donuts homepage",
+                  "url": "https://www.cocodonuts.com/",
+                  "type": "website"
+                },
+                "observedAt": "2026-11-02T16:19:00.369Z",
+                "method": "Direct HTTP GET; static HTML inspection (JavaScript not executed)"
+              },
+              {
+                "id": "p2_f10",
+                "type": "verified",
+                "statement": "No email link, phone link, or contact form was detected in the delivered HTML.",
+                "source": {
+                  "label": "Coco Donuts homepage",
+                  "url": "https://www.cocodonuts.com/",
+                  "type": "website"
+                },
+                "observedAt": "2026-11-02T16:19:00.369Z",
+                "method": "Direct HTTP GET; static HTML inspection (JavaScript not executed)"
+              },
+              {
+                "id": "p2_f11",
+                "type": "verified",
+                "statement": "No online ordering, shopping, or reservation call to action was detected in the delivered HTML.",
+                "source": {
+                  "label": "Coco Donuts homepage",
+                  "url": "https://www.cocodonuts.com/",
+                  "type": "website"
+                },
+                "observedAt": "2026-11-02T16:19:00.369Z",
+                "method": "Direct HTTP GET; static HTML inspection (JavaScript not executed)"
+              },
+              {
+                "id": "p2_f12",
+                "type": "verified",
+                "statement": "No menu link was detected in the delivered HTML.",
+                "source": {
+                  "label": "Coco Donuts homepage",
+                  "url": "https://www.cocodonuts.com/",
+                  "type": "website"
+                },
+                "observedAt": "2026-11-02T16:19:00.369Z",
+                "method": "Direct HTTP GET; static HTML inspection (JavaScript not executed)"
+              },
+              {
+                "id": "p2_f13",
+                "type": "verified",
+                "statement": "No social profile links were detected in the delivered HTML.",
+                "source": {
+                  "label": "Coco Donuts homepage",
+                  "url": "https://www.cocodonuts.com/",
+                  "type": "website"
+                },
+                "observedAt": "2026-11-02T16:19:00.369Z",
+                "method": "Direct HTTP GET; static HTML inspection (JavaScript not executed)"
+              },
+              {
+                "id": "p2_f14",
+                "type": "verified",
+                "statement": "No LocalBusiness-style structured data was detected in the delivered HTML.",
+                "source": {
+                  "label": "Coco Donuts homepage",
+                  "url": "https://www.cocodonuts.com/",
+                  "type": "website"
+                },
+                "observedAt": "2026-11-02T16:19:00.369Z",
+                "method": "Direct HTTP GET; static HTML inspection (JavaScript not executed)"
+              },
+              {
+                "id": "p2_f15",
+                "type": "verified",
+                "statement": "Strict-Transport-Security is present with a positive max-age.",
+                "source": {
+                  "label": "Coco Donuts homepage",
+                  "url": "https://www.cocodonuts.com/",
+                  "type": "website"
+                },
+                "observedAt": "2026-11-02T16:19:00.369Z",
+                "method": "Direct HTTP GET; static HTML inspection (JavaScript not executed)"
+              },
+              {
+                "id": "p2_f16",
+                "type": "verified",
+                "statement": "A web analytics or tag-manager signature is present.",
+                "source": {
+                  "label": "Coco Donuts homepage",
+                  "url": "https://www.cocodonuts.com/",
+                  "type": "website"
+                },
+                "observedAt": "2026-11-02T16:19:00.369Z",
+                "method": "Direct HTTP GET; static HTML inspection (JavaScript not executed)"
+              }
+            ],
+            "assumptions": [
+              {
+                "id": "p2_a1",
+                "type": "assumption",
+                "statement": "Addressing “No direct contact action” may improve how prospective customers find or contact Coco Donuts.",
+                "rationale": "This is an inference from observed HTML. No traffic, conversion, ranking or revenue data was collected, so impact is unproven.",
+                "basis": [
+                  "p2_f10",
+                  "p2_f6"
+                ],
+                "confidence": "medium"
+              },
+              {
+                "id": "p2_a2",
+                "type": "assumption",
+                "statement": "Coco Donuts is a plausible fit for a website review, but budget, decision-maker and interest are unknown.",
+                "rationale": "Fit is based only on a verified business listing and a live website. No contact, intent or commercial data was used.",
+                "basis": [
+                  "p2_f5",
+                  "p2_f3"
+                ],
+                "confidence": "low"
+              },
+              {
+                "id": "p2_a3",
+                "type": "assumption",
+                "statement": "Suggested outreach angle: A concise, evidence-led teardown focused on “No direct contact action” and “Missing meta description”.",
+                "rationale": "This is a messaging hypothesis based on observed HTML gaps, not a measured business outcome.",
+                "basis": [
+                  "p2_f10",
+                  "p2_f6"
+                ],
+                "confidence": "low"
+              }
+            ],
+            "sources": [
+              "https://www.openstreetmap.org/node/1950017387",
+              "https://www.cocodonuts.com/"
+            ],
+            "researchedAt": "2026-11-02T16:19:03.065Z"
+          },
+          {
+            "id": "prospect_p6",
+            "rank": 2,
+            "name": "Nate's Oatmeal Cookies",
+            "location": "Nate's Oatmeal Cookies, 3308, Southeast Belmont Street, Belmont, Sunnyside, Portland, Multnomah County, Oregon, 97214, United States",
+            "category": "bakery",
+            "coordinates": {
+              "lat": 45.5163534,
+              "lon": -122.6307858
+            },
+            "osm": {
+              "type": "node",
+              "id": 4085487765,
+              "url": "https://www.openstreetmap.org/node/4085487765"
+            },
+            "website": {
+              "url": "https://www.natesoatmealcookies.com/",
+              "finalUrl": "https://www.natesoatmealcookies.com/",
+              "status": 200,
+              "verified": true,
+              "title": "Cookies, Ice-Cream and Sweet Desserts | Nate's Oatmeal Cookies",
+              "generator": "Square Online",
+              "bytes": 56167,
+              "elapsedMs": 531,
+              "checkedAt": "2026-11-02T16:19:02.762Z",
+              "identityMatch": true,
+              "locationMatch": false,
+              "limitation": null
+            },
+            "verification": {
+              "status": "VERIFIED",
+              "identity": "MATCHED",
+              "location": "SOURCE_LISTED",
+              "website": "VERIFIED",
+              "label": "Name, listing and live website cross-checked; location is from the source listing only"
+            },
+            "opportunity": {
+              "score": 40,
+              "priority": "HOT",
+              "headline": "2 observable website gaps led by no direct contact action",
+              "summary": "Nate's Oatmeal Cookies has a live, identifiable website. Observed gaps: no direct contact action and no online ordering or booking path. These are static-HTML observations, not measured revenue losses.",
+              "signals": [
+                {
+                  "id": "p6_s1",
+                  "label": "No direct contact action",
+                  "weight": 16,
+                  "severity": 3,
+                  "factId": "p6_f10",
+                  "recommendation": "Add a clear contact action above the fold."
+                },
+                {
+                  "id": "p6_s2",
+                  "label": "No online ordering or booking path",
+                  "weight": 8,
+                  "severity": 2,
+                  "factId": "p6_f11",
+                  "recommendation": "Test a simple order/reservation call to action."
+                },
+                {
+                  "id": "p6_s3",
+                  "label": "No local-business structured data",
+                  "weight": 5,
+                  "severity": 1,
+                  "factId": "p6_f14",
+                  "recommendation": "Add LocalBusiness JSON-LD with verified details."
+                },
+                {
+                  "id": "p6_s4",
+                  "label": "No menu navigation link",
+                  "weight": 4,
+                  "severity": 1,
+                  "factId": "p6_f12",
+                  "recommendation": "Expose the menu directly in the primary navigation."
+                },
+                {
+                  "id": "p6_s5",
+                  "label": "City absent from page title",
+                  "weight": 4,
+                  "severity": 1,
+                  "factId": "p6_f4",
+                  "recommendation": "Include the service city in the page title where natural."
+                },
+                {
+                  "id": "p6_s6",
+                  "label": "No social profiles linked",
+                  "weight": 3,
+                  "severity": 1,
+                  "factId": "p6_f13",
+                  "recommendation": "Link active profiles so visitors can verify the business."
+                }
+              ],
+              "outreachAngle": "A concise, evidence-led teardown focused on “No direct contact action” and “No online ordering or booking path”."
+            },
+            "checks": {
+              "title": "Cookies, Ice-Cream and Sweet Desserts | Nate's Oatmeal Cookies",
+              "metaDescription": "Portland's Favorite Oatmeal Cookies, Ice-cream and Dessert. Chocolate Chip, Snickerdoodle and more, made with love in PDX: ",
+              "viewport": true,
+              "https": true,
+              "hsts": true,
+              "social": [],
+              "email": false,
+              "phone": false,
+              "contactForm": false,
+              "ordering": false,
+              "menuLink": false,
+              "structuredData": false,
+              "analytics": true,
+              "copyrightYear": null,
+              "platform": "Square Online",
+              "bytes": 56167,
+              "elapsedMs": 531,
+              "identityMatch": true,
+              "locationMatch": false
+            },
+            "facts": [
+              {
+                "id": "p6_f1",
+                "type": "verified",
+                "statement": "OpenStreetMap lists “Nate's Oatmeal Cookies” at Nate's Oatmeal Cookies, 3308, Southeast Belmont Street, Belmont, Sunnyside, Portland, Multnomah County, Oregon, 97214, United States.",
+                "source": {
+                  "label": "OpenStreetMap listing for Nate's Oatmeal Cookies",
+                  "url": "https://www.openstreetmap.org/node/4085487765",
+                  "type": "map-listing"
+                },
+                "observedAt": "2026-11-02T16:18:59.036Z",
+                "method": "Public Nominatim search over OpenStreetMap community data"
+              },
+              {
+                "id": "p6_f2",
+                "type": "verified",
+                "statement": "OpenStreetMap lists https://www.natesoatmealcookies.com/ as the website for this business.",
+                "source": {
+                  "label": "OpenStreetMap listing for Nate's Oatmeal Cookies",
+                  "url": "https://www.openstreetmap.org/node/4085487765",
+                  "type": "map-listing"
+                },
+                "observedAt": "2026-11-02T16:18:59.036Z",
+                "method": "Public Nominatim search over OpenStreetMap community data"
+              },
+              {
+                "id": "p6_f3",
+                "type": "verified",
+                "statement": "Homepage responded HTTP 200 at https://www.natesoatmealcookies.com/.",
+                "source": {
+                  "label": "Nate's Oatmeal Cookies homepage",
+                  "url": "https://www.natesoatmealcookies.com/",
+                  "type": "website"
+                },
+                "observedAt": "2026-11-02T16:19:02.762Z",
+                "method": "Direct HTTP GET with redirect and SSRF validation"
+              },
+              {
+                "id": "p6_f4",
+                "type": "verified",
+                "statement": "Homepage title: “Cookies, Ice-Cream and Sweet Desserts | Nate's Oatmeal Cookies”.",
+                "source": {
+                  "label": "Nate's Oatmeal Cookies homepage",
+                  "url": "https://www.natesoatmealcookies.com/",
+                  "type": "website"
+                },
+                "observedAt": "2026-11-02T16:19:02.762Z",
+                "method": "Direct HTTP GET; static HTML inspection (JavaScript not executed)"
+              },
+              {
+                "id": "p6_f5",
+                "type": "verified",
+                "statement": "The homepage title contains a distinctive token from the source business name “Nate's Oatmeal Cookies”.",
+                "source": {
+                  "label": "Nate's Oatmeal Cookies homepage",
+                  "url": "https://www.natesoatmealcookies.com/",
+                  "type": "website"
+                },
+                "observedAt": "2026-11-02T16:19:02.762Z",
+                "method": "Direct HTTP GET; static HTML inspection (JavaScript not executed)"
+              },
+              {
+                "id": "p6_f6",
+                "type": "verified",
+                "statement": "Meta description present (123 characters): “Portland's Favorite Oatmeal Cookies, Ice-cream and Dessert. Chocolate Chip, Snickerdoodle and more, made with love in PDX: ”.",
+                "source": {
+                  "label": "Nate's Oatmeal Cookies homepage",
+                  "url": "https://www.natesoatmealcookies.com/",
+                  "type": "website"
+                },
+                "observedAt": "2026-11-02T16:19:02.762Z",
+                "method": "Direct HTTP GET; static HTML inspection (JavaScript not executed)"
+              },
+              {
+                "id": "p6_f7",
+                "type": "verified",
+                "statement": "A viewport meta tag is present, declaring a responsive layout.",
+                "source": {
+                  "label": "Nate's Oatmeal Cookies homepage",
+                  "url": "https://www.natesoatmealcookies.com/",
+                  "type": "website"
+                },
+                "observedAt": "2026-11-02T16:19:02.762Z",
+                "method": "Direct HTTP GET; static HTML inspection (JavaScript not executed)"
+              },
+              {
+                "id": "p6_f8",
+                "type": "verified",
+                "statement": "Homepage HTML payload is 55 KB and responded in 531 ms.",
+                "source": {
+                  "label": "Nate's Oatmeal Cookies homepage",
+                  "url": "https://www.natesoatmealcookies.com/",
+                  "type": "website"
+                },
+                "observedAt": "2026-11-02T16:19:02.762Z",
+                "method": "Direct HTTP GET; static HTML inspection (JavaScript not executed)"
+              },
+              {
+                "id": "p6_f9",
+                "type": "verified",
+                "statement": "Detected publishing platform: Square Online.",
+                "source": {
+                  "label": "Nate's Oatmeal Cookies homepage",
+                  "url": "https://www.natesoatmealcookies.com/",
+                  "type": "website"
+                },
+                "observedAt": "2026-11-02T16:19:02.762Z",
+                "method": "Direct HTTP GET; static HTML inspection (JavaScript not executed)"
+              },
+              {
+                "id": "p6_f10",
+                "type": "verified",
+                "statement": "No email link, phone link, or contact form was detected in the delivered HTML.",
+                "source": {
+                  "label": "Nate's Oatmeal Cookies homepage",
+                  "url": "https://www.natesoatmealcookies.com/",
+                  "type": "website"
+                },
+                "observedAt": "2026-11-02T16:19:02.762Z",
+                "method": "Direct HTTP GET; static HTML inspection (JavaScript not executed)"
+              },
+              {
+                "id": "p6_f11",
+                "type": "verified",
+                "statement": "No online ordering, shopping, or reservation call to action was detected in the delivered HTML.",
+                "source": {
+                  "label": "Nate's Oatmeal Cookies homepage",
+                  "url": "https://www.natesoatmealcookies.com/",
+                  "type": "website"
+                },
+                "observedAt": "2026-11-02T16:19:02.762Z",
+                "method": "Direct HTTP GET; static HTML inspection (JavaScript not executed)"
+              },
+              {
+                "id": "p6_f12",
+                "type": "verified",
+                "statement": "No menu link was detected in the delivered HTML.",
+                "source": {
+                  "label": "Nate's Oatmeal Cookies homepage",
+                  "url": "https://www.natesoatmealcookies.com/",
+                  "type": "website"
+                },
+                "observedAt": "2026-11-02T16:19:02.762Z",
+                "method": "Direct HTTP GET; static HTML inspection (JavaScript not executed)"
+              },
+              {
+                "id": "p6_f13",
+                "type": "verified",
+                "statement": "No social profile links were detected in the delivered HTML.",
+                "source": {
+                  "label": "Nate's Oatmeal Cookies homepage",
+                  "url": "https://www.natesoatmealcookies.com/",
+                  "type": "website"
+                },
+                "observedAt": "2026-11-02T16:19:02.762Z",
+                "method": "Direct HTTP GET; static HTML inspection (JavaScript not executed)"
+              },
+              {
+                "id": "p6_f14",
+                "type": "verified",
+                "statement": "No LocalBusiness-style structured data was detected in the delivered HTML.",
+                "source": {
+                  "label": "Nate's Oatmeal Cookies homepage",
+                  "url": "https://www.natesoatmealcookies.com/",
+                  "type": "website"
+                },
+                "observedAt": "2026-11-02T16:19:02.762Z",
+                "method": "Direct HTTP GET; static HTML inspection (JavaScript not executed)"
+              },
+              {
+                "id": "p6_f15",
+                "type": "verified",
+                "statement": "Strict-Transport-Security is present with a positive max-age.",
+                "source": {
+                  "label": "Nate's Oatmeal Cookies homepage",
+                  "url": "https://www.natesoatmealcookies.com/",
+                  "type": "website"
+                },
+                "observedAt": "2026-11-02T16:19:02.762Z",
+                "method": "Direct HTTP GET; static HTML inspection (JavaScript not executed)"
+              },
+              {
+                "id": "p6_f16",
+                "type": "verified",
+                "statement": "A web analytics or tag-manager signature is present.",
+                "source": {
+                  "label": "Nate's Oatmeal Cookies homepage",
+                  "url": "https://www.natesoatmealcookies.com/",
+                  "type": "website"
+                },
+                "observedAt": "2026-11-02T16:19:02.762Z",
+                "method": "Direct HTTP GET; static HTML inspection (JavaScript not executed)"
+              }
+            ],
+            "assumptions": [
+              {
+                "id": "p6_a1",
+                "type": "assumption",
+                "statement": "Addressing “No direct contact action” may improve how prospective customers find or contact Nate's Oatmeal Cookies.",
+                "rationale": "This is an inference from observed HTML. No traffic, conversion, ranking or revenue data was collected, so impact is unproven.",
+                "basis": [
+                  "p6_f10",
+                  "p6_f11"
+                ],
+                "confidence": "medium"
+              },
+              {
+                "id": "p6_a2",
+                "type": "assumption",
+                "statement": "Nate's Oatmeal Cookies is a plausible fit for a website review, but budget, decision-maker and interest are unknown.",
+                "rationale": "Fit is based only on a verified business listing and a live website. No contact, intent or commercial data was used.",
+                "basis": [
+                  "p6_f5",
+                  "p6_f3"
+                ],
+                "confidence": "low"
+              },
+              {
+                "id": "p6_a3",
+                "type": "assumption",
+                "statement": "Suggested outreach angle: A concise, evidence-led teardown focused on “No direct contact action” and “No online ordering or booking path”.",
+                "rationale": "This is a messaging hypothesis based on observed HTML gaps, not a measured business outcome.",
+                "basis": [
+                  "p6_f10",
+                  "p6_f11"
+                ],
+                "confidence": "low"
+              }
+            ],
+            "sources": [
+              "https://www.openstreetmap.org/node/4085487765",
+              "https://www.natesoatmealcookies.com/"
+            ],
+            "researchedAt": "2026-11-02T16:19:03.065Z"
+          },
+          {
+            "id": "prospect_p3",
+            "rank": 3,
+            "name": "Kinnamons",
+            "location": "Kinnamons, 1241, Northwest Johnson Street, Pearl District, Portland, Multnomah County, Oregon, 97209, United States",
+            "category": "bakery",
+            "coordinates": {
+              "lat": 45.5287882,
+              "lon": -122.6841559
+            },
+            "osm": {
+              "type": "node",
+              "id": 6522315869,
+              "url": "https://www.openstreetmap.org/node/6522315869"
+            },
+            "website": {
+              "url": "https://www.kinnamons.com/",
+              "finalUrl": "https://www.kinnamons.com/",
+              "status": 200,
+              "verified": true,
+              "title": "Kinnamons",
+              "generator": "Squarespace",
+              "bytes": 1309623,
+              "elapsedMs": 183,
+              "checkedAt": "2026-11-02T16:19:00.856Z",
+              "identityMatch": true,
+              "locationMatch": true,
+              "limitation": null
+            },
+            "verification": {
+              "status": "VERIFIED",
+              "identity": "MATCHED",
+              "location": "MATCHED",
+              "website": "VERIFIED",
+              "label": "Name, listing, location and live website cross-checked"
+            },
+            "opportunity": {
+              "score": 14,
+              "priority": "NURTURE",
+              "headline": "2 observable website gaps led by heavy homepage payload",
+              "summary": "Kinnamons has a live, identifiable website. Observed gaps: heavy homepage payload and city absent from page title. These are static-HTML observations, not measured revenue losses.",
+              "signals": [
+                {
+                  "id": "p3_s1",
+                  "label": "Heavy homepage payload",
+                  "weight": 10,
+                  "severity": 2,
+                  "factId": "p3_f8",
+                  "recommendation": "Compress images and defer non-critical scripts."
+                },
+                {
+                  "id": "p3_s2",
+                  "label": "City absent from page title",
+                  "weight": 4,
+                  "severity": 1,
+                  "factId": "p3_f4",
+                  "recommendation": "Include the service city in the page title where natural."
+                }
+              ],
+              "outreachAngle": "A concise, evidence-led teardown focused on “Heavy homepage payload” and “City absent from page title”."
+            },
+            "checks": {
+              "title": "Kinnamons",
+              "metaDescription": "At Kinnamons, we pride ourselves on using local ingredients, time-honored recipes, and unique flavor combinations to create our fresh-made-daily Kinnamons rolls. Each bite is a fun, delicious, gooey delight, perfect for satisfying your sweet cravings. Discover why Kinnamons is Portland's favorite cinnamon roll!",
+              "viewport": true,
+              "https": true,
+              "hsts": true,
+              "social": [
+                "Instagram",
+                "Facebook",
+                "TikTok"
+              ],
+              "email": false,
+              "phone": false,
+              "contactForm": true,
+              "ordering": true,
+              "menuLink": true,
+              "structuredData": true,
+              "analytics": true,
+              "copyrightYear": 2025,
+              "platform": "Squarespace",
+              "bytes": 1309623,
+              "elapsedMs": 183,
+              "identityMatch": true,
+              "locationMatch": true
+            },
+            "facts": [
+              {
+                "id": "p3_f1",
+                "type": "verified",
+                "statement": "OpenStreetMap lists “Kinnamons” at Kinnamons, 1241, Northwest Johnson Street, Pearl District, Portland, Multnomah County, Oregon, 97209, United States.",
+                "source": {
+                  "label": "OpenStreetMap listing for Kinnamons",
+                  "url": "https://www.openstreetmap.org/node/6522315869",
+                  "type": "map-listing"
+                },
+                "observedAt": "2026-11-02T16:18:59.036Z",
+                "method": "Public Nominatim search over OpenStreetMap community data"
+              },
+              {
+                "id": "p3_f2",
+                "type": "verified",
+                "statement": "OpenStreetMap lists https://www.kinnamons.com/ as the website for this business.",
+                "source": {
+                  "label": "OpenStreetMap listing for Kinnamons",
+                  "url": "https://www.openstreetmap.org/node/6522315869",
+                  "type": "map-listing"
+                },
+                "observedAt": "2026-11-02T16:18:59.036Z",
+                "method": "Public Nominatim search over OpenStreetMap community data"
+              },
+              {
+                "id": "p3_f3",
+                "type": "verified",
+                "statement": "Homepage responded HTTP 200 at https://www.kinnamons.com/.",
+                "source": {
+                  "label": "Kinnamons homepage",
+                  "url": "https://www.kinnamons.com/",
+                  "type": "website"
+                },
+                "observedAt": "2026-11-02T16:19:00.856Z",
+                "method": "Direct HTTP GET with redirect and SSRF validation"
+              },
+              {
+                "id": "p3_f4",
+                "type": "verified",
+                "statement": "Homepage title: “Kinnamons”.",
+                "source": {
+                  "label": "Kinnamons homepage",
+                  "url": "https://www.kinnamons.com/",
+                  "type": "website"
+                },
+                "observedAt": "2026-11-02T16:19:00.856Z",
+                "method": "Direct HTTP GET; static HTML inspection (JavaScript not executed)"
+              },
+              {
+                "id": "p3_f5",
+                "type": "verified",
+                "statement": "The homepage title contains a distinctive token from the source business name “Kinnamons”.",
+                "source": {
+                  "label": "Kinnamons homepage",
+                  "url": "https://www.kinnamons.com/",
+                  "type": "website"
+                },
+                "observedAt": "2026-11-02T16:19:00.856Z",
+                "method": "Direct HTTP GET; static HTML inspection (JavaScript not executed)"
+              },
+              {
+                "id": "p3_f6",
+                "type": "verified",
+                "statement": "Meta description present (312 characters): “At Kinnamons, we pride ourselves on using local ingredients, time-honored recipes, and unique flavor combinations to create our fresh-made-daily Kinnamons rolls. Each bite is a fun”.",
+                "source": {
+                  "label": "Kinnamons homepage",
+                  "url": "https://www.kinnamons.com/",
+                  "type": "website"
+                },
+                "observedAt": "2026-11-02T16:19:00.856Z",
+                "method": "Direct HTTP GET; static HTML inspection (JavaScript not executed)"
+              },
+              {
+                "id": "p3_f7",
+                "type": "verified",
+                "statement": "A viewport meta tag is present, declaring a responsive layout.",
+                "source": {
+                  "label": "Kinnamons homepage",
+                  "url": "https://www.kinnamons.com/",
+                  "type": "website"
+                },
+                "observedAt": "2026-11-02T16:19:00.856Z",
+                "method": "Direct HTTP GET; static HTML inspection (JavaScript not executed)"
+              },
+              {
+                "id": "p3_f8",
+                "type": "verified",
+                "statement": "Homepage HTML payload is 1279 KB and responded in 183 ms.",
+                "source": {
+                  "label": "Kinnamons homepage",
+                  "url": "https://www.kinnamons.com/",
+                  "type": "website"
+                },
+                "observedAt": "2026-11-02T16:19:00.856Z",
+                "method": "Direct HTTP GET; static HTML inspection (JavaScript not executed)"
+              },
+              {
+                "id": "p3_f9",
+                "type": "verified",
+                "statement": "Detected publishing platform: Squarespace.",
+                "source": {
+                  "label": "Kinnamons homepage",
+                  "url": "https://www.kinnamons.com/",
+                  "type": "website"
+                },
+                "observedAt": "2026-11-02T16:19:00.856Z",
+                "method": "Direct HTTP GET; static HTML inspection (JavaScript not executed)"
+              },
+              {
+                "id": "p3_f10",
+                "type": "verified",
+                "statement": "Visible contact actions detected: contact form.",
+                "source": {
+                  "label": "Kinnamons homepage",
+                  "url": "https://www.kinnamons.com/",
+                  "type": "website"
+                },
+                "observedAt": "2026-11-02T16:19:00.856Z",
+                "method": "Direct HTTP GET; static HTML inspection (JavaScript not executed)"
+              },
+              {
+                "id": "p3_f11",
+                "type": "verified",
+                "statement": "An online ordering, shopping, or reservation call to action is present.",
+                "source": {
+                  "label": "Kinnamons homepage",
+                  "url": "https://www.kinnamons.com/",
+                  "type": "website"
+                },
+                "observedAt": "2026-11-02T16:19:00.856Z",
+                "method": "Direct HTTP GET; static HTML inspection (JavaScript not executed)"
+              },
+              {
+                "id": "p3_f12",
+                "type": "verified",
+                "statement": "A menu link is present in the homepage navigation or calls to action.",
+                "source": {
+                  "label": "Kinnamons homepage",
+                  "url": "https://www.kinnamons.com/",
+                  "type": "website"
+                },
+                "observedAt": "2026-11-02T16:19:00.856Z",
+                "method": "Direct HTTP GET; static HTML inspection (JavaScript not executed)"
+              },
+              {
+                "id": "p3_f13",
+                "type": "verified",
+                "statement": "Social profile links detected: Instagram, Facebook, TikTok.",
+                "source": {
+                  "label": "Kinnamons homepage",
+                  "url": "https://www.kinnamons.com/",
+                  "type": "website"
+                },
+                "observedAt": "2026-11-02T16:19:00.856Z",
+                "method": "Direct HTTP GET; static HTML inspection (JavaScript not executed)"
+              },
+              {
+                "id": "p3_f14",
+                "type": "verified",
+                "statement": "Local-business structured data present (WebSite, LocalBusiness).",
+                "source": {
+                  "label": "Kinnamons homepage",
+                  "url": "https://www.kinnamons.com/",
+                  "type": "website"
+                },
+                "observedAt": "2026-11-02T16:19:00.856Z",
+                "method": "Direct HTTP GET; static HTML inspection (JavaScript not executed)"
+              },
+              {
+                "id": "p3_f15",
+                "type": "verified",
+                "statement": "Strict-Transport-Security is present with a positive max-age.",
+                "source": {
+                  "label": "Kinnamons homepage",
+                  "url": "https://www.kinnamons.com/",
+                  "type": "website"
+                },
+                "observedAt": "2026-11-02T16:19:00.856Z",
+                "method": "Direct HTTP GET; static HTML inspection (JavaScript not executed)"
+              },
+              {
+                "id": "p3_f16",
+                "type": "verified",
+                "statement": "The homepage displays a 2025 copyright year.",
+                "source": {
+                  "label": "Kinnamons homepage",
+                  "url": "https://www.kinnamons.com/",
+                  "type": "website"
+                },
+                "observedAt": "2026-11-02T16:19:00.856Z",
+                "method": "Direct HTTP GET; static HTML inspection (JavaScript not executed)"
+              },
+              {
+                "id": "p3_f17",
+                "type": "verified",
+                "statement": "A web analytics or tag-manager signature is present.",
+                "source": {
+                  "label": "Kinnamons homepage",
+                  "url": "https://www.kinnamons.com/",
+                  "type": "website"
+                },
+                "observedAt": "2026-11-02T16:19:00.856Z",
+                "method": "Direct HTTP GET; static HTML inspection (JavaScript not executed)"
+              },
+              {
+                "id": "p3_f18",
+                "type": "verified",
+                "statement": "The delivered homepage references “Portland”, consistent with the OpenStreetMap location.",
+                "source": {
+                  "label": "Kinnamons homepage",
+                  "url": "https://www.kinnamons.com/",
+                  "type": "website"
+                },
+                "observedAt": "2026-11-02T16:19:00.856Z",
+                "method": "Static HTML text inspection (JavaScript not executed)"
+              }
+            ],
+            "assumptions": [
+              {
+                "id": "p3_a1",
+                "type": "assumption",
+                "statement": "Addressing “Heavy homepage payload” may improve how prospective customers find or contact Kinnamons.",
+                "rationale": "This is an inference from observed HTML. No traffic, conversion, ranking or revenue data was collected, so impact is unproven.",
+                "basis": [
+                  "p3_f8",
+                  "p3_f4"
+                ],
+                "confidence": "medium"
+              },
+              {
+                "id": "p3_a2",
+                "type": "assumption",
+                "statement": "Kinnamons is a plausible fit for a website review, but budget, decision-maker and interest are unknown.",
+                "rationale": "Fit is based only on a verified business listing and a live website. No contact, intent or commercial data was used.",
+                "basis": [
+                  "p3_f5",
+                  "p3_f3"
+                ],
+                "confidence": "low"
+              },
+              {
+                "id": "p3_a3",
+                "type": "assumption",
+                "statement": "Suggested outreach angle: A concise, evidence-led teardown focused on “Heavy homepage payload” and “City absent from page title”.",
+                "rationale": "This is a messaging hypothesis based on observed HTML gaps, not a measured business outcome.",
+                "basis": [
+                  "p3_f8",
+                  "p3_f4"
+                ],
+                "confidence": "low"
+              }
+            ],
+            "sources": [
+              "https://www.openstreetmap.org/node/6522315869",
+              "https://www.kinnamons.com/"
+            ],
+            "researchedAt": "2026-11-02T16:19:03.066Z"
+          }
+        ],
+        "methodology": [
+          "Resolve real businesses from public OpenStreetMap data via Nominatim.",
+          "Reject chains, franchises, generic names and duplicate domains.",
+          "Fetch each official homepage directly over HTTP with SSRF and redirect checks.",
+          "Inspect delivered HTML for identity, contact, ordering, mobile, performance and metadata signals.",
+          "Rank observed gaps, then keep facts and assumptions in separate fields."
+        ],
+        "screening": {
+          "candidateCount": 11,
+          "audited": 6,
+          "verifiedCount": 3,
+          "excluded": [
+            {
+              "name": "Great Harvest",
+              "reason": "Chain or franchise listing"
+            },
+            {
+              "name": "Bowery Bagels",
+              "reason": "Screened out by opportunity ranking after the requested count was filled"
+            },
+            {
+              "name": "Lovejoy Bakers",
+              "reason": "Screened out by opportunity ranking after the requested count was filled"
+            },
+            {
+              "name": "Mother's Bistro's Bakery",
+              "reason": "Screened out by opportunity ranking after the requested count was filled"
+            }
+          ]
+        },
+        "limitations": [
+          "Website findings come from static HTML inspection only. JavaScript-rendered content was not executed.",
+          "OpenStreetMap is community-maintained and may be incomplete or stale.",
+          "No traffic, conversion, revenue, contact or purchase-intent data was collected.",
+          "No customer was contacted and no website was published or changed."
+        ],
+        "generatedAt": "2026-11-02T16:19:03.066Z"
+      },
+      "error": null,
+      "delivery": {
+        "verified": true,
+        "method": "Persisted JSON + HTTP API + SSE",
+        "surfaces": [
+          "state.json",
+          "GET /api/state",
+          "GET /api/tasks/:id",
+          "SSE update"
+        ],
+        "deliveredAt": "2026-11-02T16:19:03.067Z",
+        "resultHash": "f092cded55dfbaa3"
+      },
+      "approvalId": null,
+      "approvalDecision": null
+    }
+  ],
+  "approvals": [],
+  "activity": [
+    {
+      "id": "act_806f5c6fa910",
+      "at": "2026-11-02T16:19:03.068Z",
+      "type": "TASK_COMPLETED",
+      "level": "info",
+      "message": "Research 3 bakery prospects in Portland, Oregon completed with 3 evidence-backed prospect(s).",
+      "taskId": "tsk_0c378ad6c6d7"
+    },
+    {
+      "id": "act_f3d711bb2d78",
+      "at": "2026-11-02T16:18:58.906Z",
+      "type": "TASK_RUNNING",
+      "level": "info",
+      "message": "Research 3 bakery prospects in Portland, Oregon started.",
+      "taskId": "tsk_0c378ad6c6d7"
+    },
+    {
+      "id": "act_52eae955d3dc",
+      "at": "2026-11-02T16:18:58.905Z",
+      "type": "prospect_research",
+      "level": "info",
+      "message": "Research 3 bakery prospects in Portland, Oregon queued.",
+      "taskId": "tsk_0c378ad6c6d7"
+    }
+  ],
+  "latestResearchTaskId": "tsk_0c378ad6c6d7",
+  "statuses": [
+    "QUEUED",
+    "RUNNING",
+    "COMPLETED",
+    "FAILED",
+    "AWAITING_APPROVAL"
+  ],
+  "services": {
+    "bridge": {
+      "status": "READY",
+      "label": "Execution bridge"
+    },
+    "discovery": {
+      "status": "READY",
+      "label": "OpenStreetMap / Nominatim"
+    },
+    "inspection": {
+      "status": "READY",
+      "label": "Direct HTTP homepage audit"
+    },
+    "delivery": {
+      "status": "READY",
+      "label": "Persisted JSON + HTTP API + SSE"
+    },
+    "outbound": {
+      "status": "LOCKED",
+      "label": "Email / publishing / spending"
+    }
+  }
+}
