@@ -2,16 +2,288 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#0a0c0d" />
     <meta
       name="description"
-      content="AGENT HQ — live operations headquarters for DEEMANNIE'S DIGITAL."
+      content="BLACKSITE // ZERO HOUR — a cinematic first-person survival shooter built with Three.js."
     />
-    <meta name="theme-color" content="#070b10" />
-    <title>AGENT HQ // DEEMANNIE'S DIGITAL</title>
+    <title>BLACKSITE // ZERO HOUR</title>
   </head>
   <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
+    <div id="app">
+      <canvas id="game" aria-label="Game viewport"></canvas>
+
+      <div id="cinema-bars" aria-hidden="true"><i></i><i></i></div>
+      <div id="damage-vignette" aria-hidden="true"></div>
+      <div id="flash" aria-hidden="true"></div>
+
+      <!-- ============================== HUD ============================== -->
+      <div id="hud" class="hidden" aria-hidden="true">
+        <div id="compass-wrap">
+          <div id="compass-track">
+            <div class="compass-strip" id="compass-strip"></div>
+          </div>
+          <div id="compass-needle"></div>
+          <div id="compass-deg">000</div>
+        </div>
+
+        <div id="objective">
+          <div class="obj-eyebrow"><span class="pulse-dot"></span> OPERATION DUSTLINE</div>
+          <div class="obj-main" id="objective-main">HOLD THE COMPOUND</div>
+          <div class="obj-sub" id="objective-sub">WAVE 01 INBOUND</div>
+        </div>
+
+        <div id="wave-panel">
+          <div class="wp-label">HOSTILES</div>
+          <div class="wp-row"><span id="enemies-left">0</span><small>REMAINING</small></div>
+          <div class="wp-progress"><i id="wave-progress"></i></div>
+          <div class="wp-wave">WAVE <b id="wave-number">1</b> / 5</div>
+        </div>
+
+        <div id="radar-wrap">
+          <div class="radar-label">TACTICAL</div>
+          <canvas id="radar" width="240" height="240"></canvas>
+          <div class="radar-sweep"></div>
+          <div class="radar-n">N</div>
+          <div class="radar-ring"></div>
+        </div>
+
+        <div id="killfeed"></div>
+
+        <div id="crosshair" class="crosshair">
+          <i class="ch ch-t"></i><i class="ch ch-b"></i><i class="ch ch-l"></i><i class="ch ch-r"></i>
+          <span class="ch-dot"></span>
+          <span id="hitmarker"><i></i><i></i><i></i><i></i></span>
+        </div>
+        <div id="hit-direction" aria-hidden="true"></div>
+
+        <div id="weapon-panel">
+          <div id="weapon-name">MK.7 CARBINE</div>
+          <div class="ammo-line">
+            <span id="ammo-mag">30</span><span class="ammo-slash">/</span><span id="ammo-reserve">180</span>
+          </div>
+          <div id="ammo-pips" class="ammo-pips"></div>
+          <div id="weapon-mode">AUTO &nbsp;·&nbsp; 5.56</div>
+          <div id="reload-prompt" class="hidden"><kbd>R</kbd> RELOAD</div>
+        </div>
+
+        <div id="health-panel">
+          <div class="hp-icon">+</div>
+          <div class="hp-body">
+            <div class="hp-line"><span id="health-value">100</span><small>VITALS</small></div>
+            <div class="hp-bar"><i id="health-fill"></i></div>
+            <div class="armor-line"><span>PLATE</span><div class="armor-bar"><i id="armor-fill"></i></div></div>
+          </div>
+        </div>
+
+        <div id="score-panel">
+          <span class="score-label">SCORE</span>
+          <span id="score-value">000000</span>
+          <span id="combo-value" class="hidden">x2</span>
+        </div>
+
+        <div id="grenade-panel">
+          <div class="grenade-icon"></div><span id="grenade-count">2</span>
+        </div>
+
+        <div id="toast"></div>
+        <div id="subtitle"></div>
+      </div>
+
+      <!-- ============================== MENU ============================== -->
+      <section id="menu" class="screen">
+        <div class="menu-grid">
+          <div class="menu-main">
+            <div class="brand">
+              <div class="brand-mark"><span>BLACKSITE</span><i></i></div>
+              <div class="brand-sub">// ZERO HOUR</div>
+            </div>
+            <p class="menu-kicker">OPERATION DUSTLINE <span>·</span> SECTOR 07</p>
+            <h1>The last light<br /><em>before the storm.</em></h1>
+            <p class="menu-copy">
+              A black-site relay has gone dark in the badlands. Hostile militia are closing from every
+              direction. Hold the compound, keep the uplink alive, and survive five assault waves.
+            </p>
+            <div class="menu-actions">
+              <button id="deploy-btn" class="btn btn-primary" type="button">
+                <span class="btn-index">01</span>
+                <span class="btn-label">DEPLOY</span>
+                <span class="btn-meta">ENTER SECTOR</span>
+                <span class="btn-arrow">→</span>
+              </button>
+              <button id="controls-btn" class="btn btn-ghost" type="button">
+                <span class="btn-index">02</span><span class="btn-label">CONTROLS</span>
+              </button>
+              <button id="settings-btn" class="btn btn-ghost" type="button">
+                <span class="btn-index">03</span><span class="btn-label">SETTINGS</span>
+              </button>
+            </div>
+            <div class="menu-footer">
+              <span><i class="status-dot"></i> SYSTEMS NOMINAL</span>
+              <span>THREE.JS / WEBGL2</span>
+              <span id="best-score">BEST 000000</span>
+            </div>
+          </div>
+
+          <aside class="menu-side">
+            <div class="side-card mission-card">
+              <div class="card-head">
+                <span>MISSION BRIEF</span><i>01</i>
+              </div>
+              <div class="mission-row"><span>LOCATION</span><b>BLACKSITE 07 · BADLANDS</b></div>
+              <div class="mission-row"><span>THREAT</span><b class="danger">SEVERE</b></div>
+              <div class="mission-row"><span>OBJECTIVE</span><b>SURVIVE 5 WAVES</b></div>
+              <div class="mission-row"><span>EXTRACTION</span><b>DAWN</b></div>
+              <div class="mission-line"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+            </div>
+            <div class="side-card intel-card">
+              <div class="intel-thumb" id="intel-thumb">
+                <div class="scan-grid"></div>
+                <div class="intel-target"></div>
+                <span class="intel-cross tl"></span><span class="intel-cross tr"></span>
+                <span class="intel-cross bl"></span><span class="intel-cross br"></span>
+              </div>
+              <div class="card-head">
+                <span>LIVE FEED</span><i class="live">REC</i>
+              </div>
+              <p>Perimeter motion detected. Multiple armed contacts moving through the eastern ruins.</p>
+              <div class="intel-foot"><span>SAT-LINK</span><b>STRONG</b></div>
+            </div>
+            <div class="side-card loadout-card">
+              <div class="card-head"><span>LOADOUT</span><i>02</i></div>
+              <div class="loadout-row"><span class="loadout-icon rifle"></span><div><b>MK.7 CARBINE</b><small>5.56 · 30 RDS</small></div></div>
+              <div class="loadout-row"><span class="loadout-icon pistol"></span><div><b>SIDEARM 9</b><small>9MM · 12 RDS</small></div></div>
+              <div class="loadout-row"><span class="loadout-icon frag"></span><div><b>FRAG ×2</b><small>LETHAL</small></div></div>
+            </div>
+          </aside>
+        </div>
+        <div class="menu-corner tl"></div><div class="menu-corner tr"></div>
+        <div class="menu-corner bl"></div><div class="menu-corner br"></div>
+        <div class="menu-coord">34°17'52"N &nbsp; 116°09'11"W &nbsp; / &nbsp; 02:47:13 LOCAL</div>
+      </section>
+
+      <!-- ============================== CONTROLS ============================== -->
+      <section id="controls-modal" class="modal hidden" role="dialog" aria-modal="true">
+        <div class="modal-card">
+          <div class="card-head"><span>FIELD MANUAL</span><i>CONTROLS</i></div>
+          <h2>Operator controls</h2>
+          <div class="controls-grid">
+            <div><kbd>W A S D</kbd><span>Move</span></div>
+            <div><kbd>MOUSE</kbd><span>Aim</span></div>
+            <div><kbd>LMB</kbd><span>Fire</span></div>
+            <div><kbd>RMB</kbd><span>Aim down sights</span></div>
+            <div><kbd>SHIFT</kbd><span>Sprint</span></div>
+            <div><kbd>C</kbd><span>Crouch</span></div>
+            <div><kbd>SPACE</kbd><span>Jump</span></div>
+            <div><kbd>R</kbd><span>Reload</span></div>
+            <div><kbd>1 / 2</kbd><span>Switch weapon</span></div>
+            <div><kbd>G</kbd><span>Throw frag</span></div>
+            <div><kbd>ESC</kbd><span>Pause</span></div>
+            <div><kbd>M</kbd><span>Mute</span></div>
+          </div>
+          <p class="modal-note">On touch devices use the left stick to move, drag the right half to aim, and the action cluster to fire, aim, reload and jump.</p>
+          <button class="btn btn-primary modal-close" data-close="controls-modal">CLOSE <span class="btn-arrow">→</span></button>
+        </div>
+      </section>
+
+      <!-- ============================== SETTINGS ============================== -->
+      <section id="settings-modal" class="modal hidden" role="dialog" aria-modal="true">
+        <div class="modal-card">
+          <div class="card-head"><span>SYSTEM CONFIG</span><i>SETTINGS</i></div>
+          <h2>Operator preferences</h2>
+          <div class="settings-list">
+            <label class="setting">
+              <span>Mouse sensitivity <b id="sens-value">1.00</b></span>
+              <input id="sens-input" type="range" min="0.2" max="3" step="0.05" value="1" />
+            </label>
+            <label class="setting">
+              <span>Master volume <b id="volume-value">70</b></span>
+              <input id="volume-input" type="range" min="0" max="100" step="1" value="70" />
+            </label>
+            <label class="setting">
+              <span>Render quality</span>
+              <select id="quality-input">
+                <option value="high">High — cinematic</option>
+                <option value="medium" selected>Medium — balanced</option>
+                <option value="low">Low — performance</option>
+              </select>
+            </label>
+            <label class="setting setting-row">
+              <span>Invert vertical look</span>
+              <input id="invert-input" type="checkbox" />
+            </label>
+            <label class="setting setting-row">
+              <span>Camera shake</span>
+              <input id="shake-input" type="checkbox" checked />
+            </label>
+          </div>
+          <button class="btn btn-primary modal-close" data-close="settings-modal">APPLY <span class="btn-arrow">→</span></button>
+        </div>
+      </section>
+
+      <!-- ============================== PAUSE ============================== -->
+      <section id="pause" class="screen hidden">
+        <div class="pause-card">
+          <div class="brand small"><div class="brand-mark"><span>BLACKSITE</span><i></i></div><div class="brand-sub">// PAUSED</div></div>
+          <div class="pause-stats">
+            <div><span>WAVE</span><b id="pause-wave">01</b></div>
+            <div><span>SCORE</span><b id="pause-score">000000</b></div>
+            <div><span>KILLS</span><b id="pause-kills">0</b></div>
+            <div><span>ACCURACY</span><b id="pause-accuracy">0%</b></div>
+          </div>
+          <button id="resume-btn" class="btn btn-primary">RESUME <span class="btn-arrow">→</span></button>
+          <button id="pause-settings-btn" class="btn btn-ghost">SETTINGS</button>
+          <button id="restart-btn" class="btn btn-ghost">RESTART OPERATION</button>
+          <button id="quit-btn" class="btn btn-ghost">ABORT TO MENU</button>
+          <p class="pause-hint">ESC or click to resume</p>
+        </div>
+      </section>
+
+      <!-- ============================== GAME OVER ============================== -->
+      <section id="gameover" class="screen hidden">
+        <div class="result-wrap">
+          <div id="result-eyebrow" class="result-eyebrow">OPERATOR KIA</div>
+          <h1 id="result-title">MISSION<br /><em>FAILED</em></h1>
+          <p id="result-copy">The relay fell silent. The badlands keep what they take.</p>
+          <div class="result-stats">
+            <div><span>WAVES CLEARED</span><b id="result-waves">0 / 5</b></div>
+            <div><span>KILLS</span><b id="result-kills">0</b></div>
+            <div><span>ACCURACY</span><b id="result-accuracy">0%</b></div>
+            <div><span>SCORE</span><b id="result-score">000000</b></div>
+            <div><span>TIME</span><b id="result-time">00:00</b></div>
+            <div><span>BEST STREAK</span><b id="result-streak">0</b></div>
+          </div>
+          <div class="result-actions">
+            <button id="redeploy-btn" class="btn btn-primary">REDEPLOY <span class="btn-arrow">→</span></button>
+            <button id="result-menu-btn" class="btn btn-ghost">RETURN TO HQ</button>
+          </div>
+          <div class="result-rank">RANK <b id="result-rank">RECRUIT</b></div>
+        </div>
+      </section>
+
+      <!-- ============================== MOBILE ============================== -->
+      <div id="mobile-controls" class="hidden" aria-hidden="true">
+        <div id="stick-zone">
+          <div id="stick-base"><div id="stick-knob"></div></div>
+        </div>
+        <div id="look-zone"></div>
+        <div id="mobile-actions">
+          <button id="mobile-fire" class="mbtn fire" type="button"><span></span></button>
+          <button id="mobile-aim" class="mbtn" type="button">ADS</button>
+          <button id="mobile-reload" class="mbtn" type="button">R</button>
+          <button id="mobile-jump" class="mbtn" type="button">↑</button>
+          <button id="mobile-swap" class="mbtn tiny" type="button">SW</button>
+          <button id="mobile-grenade" class="mbtn tiny" type="button">G</button>
+          <button id="mobile-pause" class="mbtn tiny" type="button">II</button>
+        </div>
+      </div>
+
+      <div id="boot-error" class="hidden"></div>
+    </div>
+    <script type="module" src="/src/game/main.js"></script>
   </body>
 </html>
