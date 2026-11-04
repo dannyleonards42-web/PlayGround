@@ -4,6 +4,7 @@ import {
   BellRing,
   CheckCircle2,
   Database,
+  Gamepad2,
   LayoutDashboard,
   Radio,
   Server,
@@ -340,6 +341,11 @@ export default function App() {
             System
           </button>
         </nav>
+
+        <a className="arcade-link" href="/game.html" title="NOVA BREAKER — arcade break room">
+          <Gamepad2 size={15} aria-hidden="true" />
+          Arcade
+        </a>
 
         <div className="topbar-status">
           <span className={`live-pill ${streamLive ? "live-on" : "live-off"}`}>

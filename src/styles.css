@@ -193,6 +193,28 @@ a:hover {
   line-height: 1.4;
 }
 
+.arcade-link {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 13px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.02);
+  color: var(--amber);
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: border-color 160ms ease, color 160ms ease;
+}
+
+.arcade-link:hover {
+  color: var(--text);
+  border-color: var(--amber);
+}
+
 .topbar-status {
   display: flex;
   align-items: center;

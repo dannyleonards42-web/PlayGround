@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="NOVA BREAKER — a neon arcade brick-breaker built inside AGENT HQ." />
+    <title>NOVA BREAKER — AGENT HQ Arcade</title>
+    <style>
+      :root {
+        color-scheme: dark;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        background:
+          radial-gradient(1200px 600px at 50% -10%, #16224a 0%, #0a0f24 55%, #05070f 100%);
+        color: #e7ecff;
+        font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+        min-height: 100%;
+      }
+      .page {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 20px 14px 40px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+      }
+      .masthead {
+        width: 100%;
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+      .masthead h1 {
+        margin: 0;
+        font-size: 22px;
+        letter-spacing: 4px;
+        text-transform: uppercase;
+        color: #7dfcff;
+        text-shadow: 0 0 18px rgba(125, 252, 255, 0.55);
+      }
+      .masthead a {
+        color: #93a4ff;
+        font-size: 13px;
+        text-decoration: none;
+        border: 1px solid rgba(146, 164, 255, 0.35);
+        border-radius: 8px;
+        padding: 5px 10px;
+      }
+      .masthead a:hover {
+        color: #c6d0ff;
+        border-color: rgba(198, 208, 255, 0.6);
+      }
+      .controls {
+        width: 100%;
+        display: flex;
+        gap: 8px;
+        justify-content: flex-end;
+        flex-wrap: wrap;
+      }
+      .controls button {
+        background: rgba(20, 30, 60, 0.8);
+        color: #dfe6ff;
+        border: 1px solid rgba(125, 252, 255, 0.3);
+        border-radius: 8px;
+        padding: 7px 14px;
+        font-size: 13px;
+        letter-spacing: 1px;
+        cursor: pointer;
+        font-family: inherit;
+      }
+      .controls button:hover {
+        border-color: rgba(125, 252, 255, 0.7);
+        color: #ffffff;
+      }
+      .stage {
+        width: 100%;
+        max-width: 960px;
+        border-radius: 14px;
+        overflow: hidden;
+        border: 1px solid rgba(125, 252, 255, 0.25);
+        box-shadow:
+          0 0 40px rgba(90, 120, 255, 0.18),
+          0 20px 60px rgba(0, 0, 0, 0.55);
+        line-height: 0;
+      }
+      canvas {
+        width: 100%;
+        height: auto;
+        display: block;
+        touch-action: none;
+        cursor: none;
+      }
+      .hint {
+        color: #8ea0d8;
+        font-size: 13px;
+        text-align: center;
+        max-width: 720px;
+      }
+      .hint b {
+        color: #b8c6ff;
+        font-weight: 600;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <div class="masthead">
+        <h1>Nova Breaker</h1>
+        <a href="./">&#8592; Back to AGENT HQ</a>
+      </div>
+      <div class="controls">
+        <button id="btnPause" type="button">Pause (P)</button>
+        <button id="btnSound" type="button">Sound: On (M)</button>
+        <button id="btnRestart" type="button">Restart (R)</button>
+      </div>
+      <div class="stage">
+        <canvas id="game" width="960" height="640" aria-label="NOVA BREAKER game canvas"></canvas>
+      </div>
+      <p class="hint">
+        <b>Move</b> mouse / touch / Arrow keys &middot; <b>Launch &amp; fire lasers</b> Space or
+        click &middot; <b>Pause</b> P &middot; <b>Mute</b> M &middot; Clear every brick to jump
+        sectors. Grab falling capsules: <b>W</b> wide paddle, <b>M</b> multi-ball,
+        <b>S</b> slow-field, <b>L</b> laser paddle, <b>+</b> extra life.
+      </p>
+    </div>
+    <script type="module" src="/src/game/main.ts"></script>
+  </body>
+</html>

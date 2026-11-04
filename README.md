@@ -36,6 +36,17 @@ external actions behind a human approval gate.
 
 The System view reports these blocks in the running interface.
 
+## Arcade
+
+A complete, playable arcade game ships with this repository:
+
+- [**NOVA BREAKER**](/game.html) — a neon brick-breaker built in self-contained
+  TypeScript (`game.html` + `src/game/`). Mouse, touch or keyboard controls,
+  5 looping sectors, combo scoring, five power-ups (wide paddle, multi-ball,
+  slow-field, laser paddle, extra life), explosive bricks, synthesized sound
+  and a persisted high score. Open `/game.html` on the running server, or the
+  "Arcade" link in the dashboard top bar.
+
 ## Run it
 
 ```bash
